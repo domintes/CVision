@@ -82,12 +82,13 @@ const App = () => {
               font-family: Arial, sans-serif;
               margin: 0;
               padding: 0;
+              height: 1056px;
             }
             .container {
               display: flex;
               flex-direction: row;
               width: 100%;
-              height: 100vh;
+              height: 1056px;
             }
             .left-section {
               background-color: ${selectedColor};
@@ -95,7 +96,7 @@ const App = () => {
               padding: 20px;
               width: 30%;
               box-sizing: border-box;
-              height: 100vh;
+              height: 1056px;
             }
             .right-section {
               padding: 20px;
@@ -125,7 +126,7 @@ const App = () => {
               color: gray;
               position: absolute;
               bottom: 24px;
-              left: 32%;
+              left: 120px;
               width: 100%;
             }
           </style>
@@ -175,14 +176,15 @@ const App = () => {
             </div>
           </div>
           <div class="footer">
-            Niniejszy dokument zawiera dane osobowe i jest przeznaczony wyłącznie do celów rekrutacyjnych zgodnie z RODO.
+            Niniejszy dokument zawiera dane osobowe i jest przeznaczony <br />
+            wyłącznie do celów rekrutacyjnych zgodnie z RODO.
           </div>
         </body>
       </html>
     `;
 
     const options = {
-      margin: 0.5,
+      margin: 0,
       filename: `${personalInfo.firstName}_${personalInfo.lastName}_cv.pdf`.replace(
         /\s+/g,
         '_'
