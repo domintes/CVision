@@ -1,0 +1,78 @@
+$primary-color: #007bff;
+$secondary-color: #0056b3;
+$border-radius: 4px;
+$font-family: Arial, sans-serif;
+
+
+body {
+  background-color: #141b21;
+  color: white;
+}
+
+.cv-builder {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #141b21;
+
+  .personal-info {
+    margin-bottom: 30px;
+
+    input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+    }
+  }
+
+  .address {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .section {
+    margin-bottom: 30px;
+
+    h2 {
+      margin-bottom: 15px;
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 10px;
+    }
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+
+    &:hover {
+      background: #0056b3;
+    }
+  }
+
+  .education-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+}

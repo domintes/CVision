@@ -1,53 +1,44 @@
-# Osu! Beatmap Manager
+# CVision
 
-Aplikacja desktopowa do zarządzania beatmapami Osu!, umożliwiająca wyszukiwanie, przeglądanie i przenoszenie map między folderami.
+CVision is a modern, glitch-art inspired CV builder application. It features a dark breakcore aesthetic and is fully responsive, making it suitable for users on any device.
 
-## Funkcjonalności
+## Features
 
-- Wyszukiwanie beatmap w wybranym folderze
-- Wyświetlanie listy znalezionych beatmap z paginacją (100 map na stronę)
-- Filtrowanie beatmap według artysty, tytułu lub twórcy
-- Masowe zaznaczanie beatmap za pomocą checkboxów
-- Przenoszenie zaznaczonych beatmap do wybranego folderu docelowego
+- **Responsive Design**: Built with Tailwind CSS for a seamless experience across devices.
+- **Dark Breakcore Theme**: A unique, modern aesthetic with glitch-art elements.
+- **User-Friendly Interface**: Intuitive layout for creating and editing CVs.
 
-## Wymagania
+## Installation
 
-- Node.js (wersja 14 lub nowsza)
-- npm lub yarn
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/CVision.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd CVision
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Instalacja
+## Usage
 
-1. Sklonuj repozytorium:
-```
-git clone https://github.com/twoj-uzytkownik/osu-beatmap-manager.git
-cd osu-beatmap-manager
-```
+- Open the application in your browser at `http://localhost:3000`.
+- Fill in your personal information, address, and other sections to build your CV.
+- Download or share your CV once completed.
 
-2. Zainstaluj zależności:
-```
-npm install
-```
+## Technologies Used
 
-## Uruchamianie
+- **React**: For building the user interface.
+- **Tailwind CSS**: For styling and responsiveness.
+- **Vite**: For fast development and build tooling.
 
-### Tryb deweloperski
+## License
 
-```
-npm run dev
-```
-
-### Budowanie aplikacji
-
-```
-npm run build
-```
-
-## Technologie
-
-- React - interfejs użytkownika
-- Electron - aplikacja desktopowa
-- Vite - narzędzie do budowania
-
-## Licencja
-
-ISC
+This project is licensed under the MIT License. See the LICENSE file for details.
