@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
@@ -23,7 +22,6 @@ contextBridge.exposeInMainWorld('electron', {
         'error'
       ]
       if (validChannels.includes(channel)) {
-        // Usuwamy stare nasłuchiwacze, aby uniknąć duplikacji
         ipcRenderer.removeAllListeners(channel)
         ipcRenderer.on(channel, (event, ...args) => func(...args))
       }
