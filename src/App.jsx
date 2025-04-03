@@ -70,9 +70,25 @@ const App = () => {
     setCustomCategories(updatedCategories);
   };
 
-  const exportToPDF = () => {
-    // Placeholder for PDF export logic
-    console.log('Exporting to PDF...');
+  const exportToPDF = async () => {
+    try {
+      const { ipcRenderer } = window.electron;
+      const defaultFilename = `${personalInfo.firstName}_${personalInfo.lastName}_cv.pdf`.replace(/\s+/g, '_');
+      const { filePath } = await ipcRenderer.invoke('save-file-dialog', {
+        defaultPath: defaultFilename,
+        filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+      });
+
+      if (filePath) {
+        // Placeholder for PDF generation logic
+        console.log(`Saving PDF to: ${filePath}`);
+        // Add logic to generate and save the PDF to `filePath`
+      } else {
+        console.log('Save operation was canceled.');
+      }
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+    }
   };
 
   return (

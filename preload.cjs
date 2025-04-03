@@ -27,6 +27,12 @@ contextBridge.exposeInMainWorld('electron', {
         ipcRenderer.removeAllListeners(channel)
         ipcRenderer.on(channel, (event, ...args) => func(...args))
       }
+    },
+    invoke: (channel, data) => {
+      const validChannels = ['save-file-dialog'];
+      if (validChannels.includes(channel)) {
+        return ipcRenderer.invoke(channel, data);
+      }
     }
   }
 })
