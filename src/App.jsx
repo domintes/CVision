@@ -95,12 +95,13 @@ const App = () => {
               padding: 20px;
               width: 30%;
               box-sizing: border-box;
+              height: 100vh;
             }
             .right-section {
               padding: 20px;
               width: 70%;
               box-sizing: border-box;
-              color: black; /* Ensure text is visible */
+              color: black;
             }
             .header {
               color: ${selectedColor};
@@ -119,9 +120,13 @@ const App = () => {
             }
             .footer {
               text-align: center;
-              margin-top: 20px;
+              margin-top: auto;
               font-size: 12px;
               color: gray;
+              position: absolute;
+              bottom: 24px;
+              left: 32%;
+              width: 100%;
             }
           </style>
         </head>
