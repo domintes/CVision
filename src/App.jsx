@@ -83,18 +83,23 @@ const App = () => {
               margin: 0;
               padding: 0;
             }
+            .container {
+              display: flex;
+              flex-direction: row;
+              width: 100%;
+              height: 100vh;
+            }
             .left-section {
               background-color: ${selectedColor};
               color: white;
               padding: 20px;
               width: 30%;
-              float: left;
-              height: 100vh;
+              box-sizing: border-box;
             }
             .right-section {
               padding: 20px;
               width: 70%;
-              float: left;
+              box-sizing: border-box;
             }
             .header {
               color: ${selectedColor};
@@ -105,26 +110,68 @@ const App = () => {
             .content {
               margin-bottom: 20px;
             }
+            ul {
+              padding-left: 20px;
+            }
+            ul li {
+              margin-bottom: 5px;
+            }
           </style>
         </head>
         <body>
-          <div class="left-section">
-            <h2>${personalInfo.firstName} ${personalInfo.lastName}</h2>
-            <p>${personalInfo.address.replace(/,\s*$/, '')}</p>
-            ${interests.length > 0 ? `<h3>Zainteresowania:</h3><ul>${interests.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
-          </div>
-          <div class="right-section">
-            ${education.length > 0 ? `<div class="content"><div class="header">Wykształcenie</div>${education.map(e => `<p>${e.school}, ${e.city}, ${e.period}, ${e.field}</p>`).join('')}</div>` : ''}
-            ${experience.length > 0 ? `<div class="content"><div class="header">Doświadczenie</div>${experience.map(e => `<p>${e.company}, ${e.position}, ${e.period}</p>`).join('')}</div>` : ''}
-            ${customCategories.map(cat => `<div class="content"><div class="header">${cat.name}</div>${cat.items.map(item => `<p>${item}</p>`).join('')}</div>`).join('')}
+          <div class="container">
+            <div class="left-section">
+              <h2>${personalInfo.firstName} ${personalInfo.lastName}</h2>
+              <p>${personalInfo.address.replace(/,\s*$/, '')}</p>
+              ${
+                interests.length > 0
+                  ? `<h3>Zainteresowania:</h3><ul>${interests
+                      .map((i) => `<li>${i}</li>`)
+                      .join('')}</ul>`
+                  : ''
+              }
+            </div>
+            <div class="right-section">
+              ${
+                education.length > 0
+                  ? `<div class="content"><div class="header">Wykształcenie</div>${education
+                      .map(
+                        (e) =>
+                          `<p><strong>${e.school}</strong>, ${e.city}<br>${e.period}<br>${e.field}</p>`
+                      )
+                      .join('')}</div>`
+                  : ''
+              }
+              ${
+                experience.length > 0
+                  ? `<div class="content"><div class="header">Doświadczenie</div>${experience
+                      .map(
+                        (e) =>
+                          `<p><strong>${e.company}</strong><br>${e.position}<br>${e.period}</p>`
+                      )
+                      .join('')}</div>`
+                  : ''
+              }
+              ${customCategories
+                .map(
+                  (cat) =>
+                    `<div class="content"><div class="header">${cat.name}</div>${cat.items
+                      .map((item) => `<p>${item}</p>`)
+                      .join('')}</div>`
+                )
+                .join('')}
+            </div>
           </div>
         </body>
       </html>
     `;
 
     const options = {
-      margin: 1,
-      filename: `${personalInfo.firstName}_${personalInfo.lastName}_cv.pdf`.replace(/\s+/g, '_'),
+      margin: 0.5,
+      filename: `${personalInfo.firstName}_${personalInfo.lastName}_cv.pdf`.replace(
+        /\s+/g,
+        '_'
+      ),
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
     };
