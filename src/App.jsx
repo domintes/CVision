@@ -100,6 +100,7 @@ const App = () => {
               padding: 20px;
               width: 70%;
               box-sizing: border-box;
+              color: black; /* Ensure text is visible */
             }
             .header {
               color: ${selectedColor};
@@ -115,6 +116,12 @@ const App = () => {
             }
             ul li {
               margin-bottom: 5px;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 20px;
+              font-size: 12px;
+              color: gray;
             }
           </style>
         </head>
@@ -161,6 +168,9 @@ const App = () => {
                 )
                 .join('')}
             </div>
+          </div>
+          <div class="footer">
+            Niniejszy dokument zawiera dane osobowe i jest przeznaczony wyłącznie do celów rekrutacyjnych zgodnie z RODO.
           </div>
         </body>
       </html>
