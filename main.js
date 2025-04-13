@@ -45,9 +45,9 @@ function createWindow() {
     })
   }
 
-  if (process.env.NODE_ENV !== 'production') {
-    mainWindow.webContents.openDevTools()
-  }
+  // if (process.env.NODE_ENV !== 'production') {
+  //   mainWindow.webContents.openDevTools()
+  // }
 }
 
 app.whenReady().then(() => {
