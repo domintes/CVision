@@ -59,15 +59,13 @@ const CVisionSection = ({
     const config = sectionConfig[category];
     if (!config) return;
 
-    if (config.isArray && config.inputs?.[0]?.isArray) {
-      const atom = getAtomByCategory(category);
-      const [values, setValues] = atom;
+    if (config.inputs?.[0]?.isArray) {
+      const [values, setValues] = getAtomByCategory(category);
       if (values.length < (config.inputs[0].maxItems || Infinity)) {
         setValues([...values, '']);
       }
     } else if (config.isArray) {
-      const atom = getAtomByCategory(category);
-      const [values, setValues] = atom;
+      const [values, setValues] = getAtomByCategory(category);
       const newItem = config.inputs.reduce((acc, input) => {
         acc[input.name] = '';
         return acc;
@@ -101,7 +99,7 @@ const CVisionSection = ({
 
     const [values] = getAtomByCategory(sectionId);
     
-    return config.inputs?.map(input => {
+    return config.inputs?.map((input, inputIndex) => {
       if (sectionId === 'personalInfo') {
         const InputComponent = input.type === 'textarea' ? 'textarea' : 'input';
         return (
@@ -126,16 +124,21 @@ const CVisionSection = ({
           />
         );
       } else if (input.isArray) {
-        return values.map((value, idx) => (
-          <input
-            key={`${input.name}-${idx}`}
-            type={input.type}
-            placeholder={input.placeholderText}
-            value={value}
-            onChange={(e) => handleInputChange(e, null, idx, sectionId)}
-            className="input"
-          />
-        ));
+        return (
+          <ul key={`${sectionId}-list-${inputIndex}`} className="input-list">
+            {values.map((value, idx) => (
+              <li key={`${sectionId}-${input.name}-${idx}`}>
+                <input
+                  type={input.type}
+                  placeholder={input.placeholderText}
+                  value={value || ''}
+                  onChange={(e) => handleInputChange(e, null, idx, sectionId)}
+                  className="input"
+                />
+              </li>
+            ))}
+          </ul>
+        );
       }
       return null;
     });
