@@ -162,6 +162,12 @@ const App = () => {
           .join('')}</div>`
         : ''
       }
+              ${skills.length > 0
+        ? `<div class="content"><div class="header">Umiejętności</div><ul>${skills
+          .map((skill) => `<li>${skill}</li>`)
+          .join('')}</ul></div>`
+        : ''
+      }
               ${customCategories
         .map(
           (cat) =>
@@ -193,6 +199,88 @@ const App = () => {
     html2pdf().from(content).set(options).save();
   };
 
+  const saveData = () => {
+    const data = {
+      personalInfo,
+      skills,
+      interests,
+      education,
+      experience,
+      customCategories,
+      selectedColor,
+      profileImage,
+      sections
+    };
+    localStorage.setItem('cvision-data', JSON.stringify(data));
+    
+    // Create and show a non-blocking notification
+    const notification = document.createElement('div');
+    notification.textContent = 'Dane zostały zapisane';
+    notification.style.position = 'fixed';
+    notification.style.bottom = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = 'rgba(0, 123, 255, 0.9)';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '1000';
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 2000);
+  };
+
+  const loadData = () => {
+    const savedData = localStorage.getItem('cvision-data');
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      
+      // Use requestAnimationFrame to ensure smooth UI updates
+      requestAnimationFrame(() => {
+        setPersonalInfo(data.personalInfo);
+        setSkills(data.skills);
+        setInterests(data.interests);
+        setEducation(data.education);
+        setExperience(data.experience);
+        setCustomCategories(data.customCategories);
+        setSelectedColor(data.selectedColor);
+        setProfileImage(data.profileImage);
+        setSections(data.sections);
+        
+        // Show notification
+        const notification = document.createElement('div');
+        notification.textContent = 'Dane zostały wczytane';
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.padding = '10px 20px';
+        notification.style.background = 'rgba(0, 123, 255, 0.9)';
+        notification.style.borderRadius = '4px';
+        notification.style.zIndex = '1000';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.remove();
+        }, 2000);
+      });
+    } else {
+      const notification = document.createElement('div');
+      notification.textContent = 'Brak zapisanych danych';
+      notification.style.position = 'fixed';
+      notification.style.bottom = '20px';
+      notification.style.right = '20px';
+      notification.style.padding = '10px 20px';
+      notification.style.background = 'rgba(255, 0, 0, 0.9)';
+      notification.style.borderRadius = '4px';
+      notification.style.zIndex = '1000';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 2000);
+    }
+  };
+
   const populateTestData = () => {
     setPersonalInfo({
       firstName: 'Jan',
@@ -216,8 +304,7 @@ const App = () => {
     <div className="cv-builder bg-gray-800 text-white p-6">
       <h1 className="app-header text-2xl mb-4">CVision</h1>
 
-      <div className="personal-info-section">
-        <h2>Informacje osobiste</h2>
+      <div className="profile-image-section">
         <div className="profile-image-container">
           {profileImage ? (
             <img src={profileImage} alt="Profile" className="profile-preview" />
@@ -237,26 +324,6 @@ const App = () => {
             {profileImage ? 'Zmień zdjęcie' : 'Dodaj zdjęcie'}
           </label>
         </div>
-        <input
-          type="text"
-          placeholder="Imię"
-          value={personalInfo.firstName}
-          onChange={(e) => handleInputChange(e, 'firstName')}
-          className="input"
-        />
-        <input
-          type="text"
-          placeholder="Nazwisko"
-          value={personalInfo.lastName}
-          onChange={(e) => handleInputChange(e, 'lastName')}
-          className="input"
-        />
-        <textarea
-          placeholder="Adres (np. Ulica 7D/2, Miasto, Kod pocztowy)"
-          value={personalInfo.address}
-          onChange={(e) => handleInputChange(e, 'address')}
-          className="textarea"
-        />
       </div>
 
       {sections.map((section, index) => (
@@ -281,15 +348,22 @@ const App = () => {
         />
       </div>
 
-      <button onClick={exportToPDF} className="export-button">
-        Wyeksportuj jako PDF
-      </button>
-
-      {testMode === 1 && (
-        <button onClick={populateTestData} className="test-button">
-          Wypełnij danymi testowymi
+      <div className="button-group">
+        <button onClick={exportToPDF} className="export-button">
+          Wyeksportuj jako PDF
         </button>
-      )}
+        <button onClick={saveData} className="button">
+          Zapisz dane
+        </button>
+        <button onClick={loadData} className="button">
+          Wczytaj dane
+        </button>
+        {testMode === 1 && (
+          <button onClick={populateTestData} className="test-button">
+            Wypełnij danymi testowymi
+          </button>
+        )}
+      </div>
     </div>
   );
 };

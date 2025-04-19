@@ -258,3 +258,28 @@ button.test-button {
   text-align: center;
   max-width: 40vw;
 }
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  
+  button {
+    min-width: 140px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    &.export-button {
+      background: $primary-color;
+      
+      &:hover {
+        background: $secondary-color;
+      }
+    }
+  }
+}

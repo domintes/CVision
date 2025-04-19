@@ -26,33 +26,54 @@ const CVisionSection = ({
 
   const handleInputChange = (e, field, index, category) => {
     const value = e.target.value;
+    const element = e.target;
+    
     switch(category) {
       case 'personalInfo':
-        setPersonalInfo({ ...personalInfo, [field]: value });
+        setPersonalInfo(prev => ({ ...prev, [field]: value }));
         break;
       case 'skills':
-        const updatedSkills = [...skills];
-        updatedSkills[index] = value;
-        setSkills(updatedSkills);
+        setSkills(prev => {
+          const updated = [...prev];
+          updated[index] = value;
+          return updated;
+        });
         break;
       case 'interests':
-        const updatedInterests = [...interests];
-        updatedInterests[index] = value;
-        setInterests(updatedInterests);
+        setInterests(prev => {
+          const updated = [...prev];
+          updated[index] = value;
+          return updated;
+        });
         break;
       case 'education':
-        const updatedEducation = [...education];
-        updatedEducation[index][field] = value;
-        setEducation(updatedEducation);
+        setEducation(prev => {
+          const updated = [...prev];
+          if (updated[index]) {
+            updated[index] = { ...updated[index], [field]: value };
+          }
+          return updated;
+        });
         break;
       case 'experience':
-        const updatedExperience = [...experience];
-        updatedExperience[index][field] = value;
-        setExperience(updatedExperience);
+        setExperience(prev => {
+          const updated = [...prev];
+          if (updated[index]) {
+            updated[index] = { ...updated[index], [field]: value };
+          }
+          return updated;
+        });
         break;
       default:
         break;
     }
+
+    // Ensure focus is maintained after state update
+    requestAnimationFrame(() => {
+      if (document.activeElement !== element) {
+        element.focus();
+      }
+    });
   };
 
   const addField = (category) => {
