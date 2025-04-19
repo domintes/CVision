@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog, session } = require('electron')
 const path = require('path')
-const { createReadStream } = require('fs')
+const { createReadStream, writeFileSync, readFileSync, existsSync, readdirSync } = require('fs')
 const { createInterface } = require('readline')
 const glob = require('glob')
 const { dirname } = require('path')
@@ -48,6 +48,47 @@ function createWindow() {
   // if (process.env.NODE_ENV !== 'production') {
   //   mainWindow.webContents.openDevTools()
   // }
+}
+
+function setupIpcHandlers() {
+  const profilesDir = path.join(app.getPath('userData'), 'profiles');
+  
+  // Ensure profiles directory exists
+  if (!existsSync(profilesDir)) {
+    mkdir(profilesDir, { recursive: true });
+  }
+
+  ipcMain.handle('save-profile', async (event, { data, profileName }) => {
+    try {
+      const filePath = path.join(profilesDir, `${profileName}.json`);
+      writeFileSync(filePath, JSON.stringify(data, null, 2));
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
+  ipcMain.handle('load-profile', async (event, profileName) => {
+    try {
+      const filePath = path.join(profilesDir, `${profileName}.json`);
+      const data = readFileSync(filePath, 'utf8');
+      return { success: true, data: JSON.parse(data) };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
+  ipcMain.handle('get-profiles', async () => {
+    try {
+      const files = readdirSync(profilesDir);
+      const profiles = files
+        .filter(file => file.endsWith('.json'))
+        .map(file => file.replace('.json', ''));
+      return { success: true, profiles };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
 }
 
 app.whenReady().then(() => {

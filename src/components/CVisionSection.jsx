@@ -61,6 +61,10 @@ const CVisionSection = ({
     const element = e.target;
     const fieldId = index !== null ? `${category}-${index}-${field}` : `${category}-${field}`;
     
+    // Store current selection/cursor position
+    const selectionStart = element.selectionStart;
+    const selectionEnd = element.selectionEnd;
+    
     switch(category) {
       case 'personalInfo':
         setPersonalInfo(prev => ({ ...prev, [field]: value }));
@@ -104,10 +108,16 @@ const CVisionSection = ({
         break;
     }
 
-    // Ensure focus is maintained after state update
+    // Ensure focus and cursor position are maintained after state update
     requestAnimationFrame(() => {
       if (document.activeElement !== element) {
         element.focus();
+        // Restore cursor position
+        try {
+          element.setSelectionRange(selectionStart, selectionEnd);
+        } catch (e) {
+          // Ignore errors for non-text inputs
+        }
       }
     });
   };

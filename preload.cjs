@@ -27,7 +27,12 @@ contextBridge.exposeInMainWorld('electron', {
       }
     },
     invoke: (channel, data) => {
-      const validChannels = ['save-file-dialog'];
+      const validChannels = [
+        'save-file-dialog',
+        'save-profile',
+        'load-profile',
+        'get-profiles'
+      ];
       if (validChannels.includes(channel)) {
         return ipcRenderer.invoke(channel, data);
       }
