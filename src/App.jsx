@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import html2pdf from 'html2pdf.js';
 import './app.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CVisionSection from './components/CVisionSection';
 import {
   personalInfoAtom,
@@ -26,6 +26,21 @@ const App = () => {
   const [profileImage, setProfileImage] = useAtom(profileImageAtom);
   const [sections, setSections] = useAtom(sectionsOrderAtom);
   const [testMode] = useState(1);
+  const [savedProfiles, setSavedProfiles] = useState([]);
+  const [showProfileList, setShowProfileList] = useState(false);
+  const [showSaveInput, setShowSaveInput] = useState(false);
+  const [newProfileName, setNewProfileName] = useState('');
+
+  // Load saved profiles on component mount
+  useEffect(() => {
+    const profiles = Object.keys(localStorage)
+      .filter(key => key.startsWith('cvision-profile-'))
+      .map(key => ({
+        id: key,
+        name: key.replace('cvision-profile-', '')
+      }));
+    setSavedProfiles(profiles);
+  }, []);
 
   const handleInputChange = (e, field) => {
     setPersonalInfo({ ...personalInfo, [field]: e.target.value });
@@ -200,6 +215,16 @@ const App = () => {
   };
 
   const saveData = () => {
+    if (!showSaveInput) {
+      setShowSaveInput(true);
+      return;
+    }
+
+    if (!newProfileName.trim()) {
+      showNotification('Podaj nazwę profilu', true);
+      return;
+    }
+
     const data = {
       personalInfo,
       skills,
@@ -211,31 +236,29 @@ const App = () => {
       profileImage,
       sections
     };
-    localStorage.setItem('cvision-data', JSON.stringify(data));
+
+    const profileId = `cvision-profile-${newProfileName}`;
+    localStorage.setItem(profileId, JSON.stringify(data));
     
-    // Create and show a non-blocking notification
-    const notification = document.createElement('div');
-    notification.textContent = 'Dane zostały zapisane';
-    notification.style.position = 'fixed';
-    notification.style.bottom = '20px';
-    notification.style.right = '20px';
-    notification.style.padding = '10px 20px';
-    notification.style.background = 'rgba(0, 123, 255, 0.9)';
-    notification.style.borderRadius = '4px';
-    notification.style.zIndex = '1000';
-    document.body.appendChild(notification);
+    // Update saved profiles list
+    setSavedProfiles(prev => {
+      const exists = prev.some(p => p.id === profileId);
+      if (!exists) {
+        return [...prev, { id: profileId, name: newProfileName }];
+      }
+      return prev;
+    });
     
-    setTimeout(() => {
-      notification.remove();
-    }, 2000);
+    showNotification('Profil został zapisany');
+    setShowSaveInput(false);
+    setNewProfileName('');
   };
 
-  const loadData = () => {
-    const savedData = localStorage.getItem('cvision-data');
+  const loadData = (profileId) => {
+    const savedData = localStorage.getItem(profileId);
     if (savedData) {
       const data = JSON.parse(savedData);
       
-      // Use requestAnimationFrame to ensure smooth UI updates
       requestAnimationFrame(() => {
         setPersonalInfo(data.personalInfo);
         setSkills(data.skills);
@@ -247,38 +270,36 @@ const App = () => {
         setProfileImage(data.profileImage);
         setSections(data.sections);
         
-        // Show notification
-        const notification = document.createElement('div');
-        notification.textContent = 'Dane zostały wczytane';
-        notification.style.position = 'fixed';
-        notification.style.bottom = '20px';
-        notification.style.right = '20px';
-        notification.style.padding = '10px 20px';
-        notification.style.background = 'rgba(0, 123, 255, 0.9)';
-        notification.style.borderRadius = '4px';
-        notification.style.zIndex = '1000';
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-          notification.remove();
-        }, 2000);
+        showNotification('Profil został wczytany');
       });
-    } else {
-      const notification = document.createElement('div');
-      notification.textContent = 'Brak zapisanych danych';
-      notification.style.position = 'fixed';
-      notification.style.bottom = '20px';
-      notification.style.right = '20px';
-      notification.style.padding = '10px 20px';
-      notification.style.background = 'rgba(255, 0, 0, 0.9)';
-      notification.style.borderRadius = '4px';
-      notification.style.zIndex = '1000';
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 2000);
     }
+    setShowProfileList(false);
+  };
+
+  const deleteProfile = (profileId, event) => {
+    event.stopPropagation();
+    if (window.confirm('Czy na pewno chcesz usunąć ten profil?')) {
+      localStorage.removeItem(profileId);
+      setSavedProfiles(prev => prev.filter(profile => profile.id !== profileId));
+      showNotification('Profil został usunięty');
+    }
+  };
+
+  const showNotification = (message, isError = false) => {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.bottom = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = isError ? 'rgba(255, 0, 0, 0.9)' : 'rgba(0, 123, 255, 0.9)';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '1000';
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 2000);
   };
 
   const populateTestData = () => {
@@ -352,11 +373,41 @@ const App = () => {
         <button onClick={exportToPDF} className="export-button">
           Wyeksportuj jako PDF
         </button>
-        <button onClick={saveData} className="button">
-          Zapisz dane
-        </button>
-        <button onClick={loadData} className="button">
-          Wczytaj dane
+        {showSaveInput ? (
+          <div className="save-profile-input">
+            <input
+              type="text"
+              value={newProfileName}
+              onChange={(e) => setNewProfileName(e.target.value)}
+              placeholder="Nazwa profilu"
+              className="profile-name-input"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  saveData();
+                } else if (e.key === 'Escape') {
+                  setShowSaveInput(false);
+                  setNewProfileName('');
+                }
+              }}
+              autoFocus
+            />
+            <button onClick={saveData} className="button save-confirm">
+              Zapisz
+            </button>
+            <button onClick={() => {
+              setShowSaveInput(false);
+              setNewProfileName('');
+            }} className="button cancel">
+              Anuluj
+            </button>
+          </div>
+        ) : (
+          <button onClick={saveData} className="button">
+            Zapisz dane
+          </button>
+        )}
+        <button onClick={() => setShowProfileList(!showProfileList)} className="button">
+          Wczytaj profil
         </button>
         {testMode === 1 && (
           <button onClick={populateTestData} className="test-button">
@@ -364,6 +415,22 @@ const App = () => {
           </button>
         )}
       </div>
+
+      {showProfileList && savedProfiles.length > 0 && (
+        <div className="profiles-list">
+          <h3>Zapisane profile:</h3>
+          <div className="saved-profiles">
+            {savedProfiles.map(profile => (
+              <div key={profile.id} className="profile-item" onClick={() => loadData(profile.id)}>
+                <span>{profile.name}</span>
+                <button onClick={(e) => deleteProfile(profile.id, e)} className="delete-profile">
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

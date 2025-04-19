@@ -233,6 +233,134 @@ body {
       }
     }
   }
+
+  .profiles-list {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 300px;
+    z-index: 1000;
+
+    h3 {
+      margin-bottom: 10px;
+      color: white;
+      font-size: 16px;
+    }
+
+    .saved-profiles {
+      max-height: 200px;
+      overflow-y: auto;
+
+      .profile-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        margin-bottom: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+
+        span {
+          color: white;
+        }
+
+        .delete-profile {
+          background: none;
+          border: none;
+          color: rgba(255, 255, 255, 0.7);
+          padding: 2px 6px;
+          margin: 0;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            color: rgba(255, 0, 0, 0.8);
+            background: none;
+          }
+        }
+      }
+    }
+  }
+
+  .button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    
+    button {
+      min-width: 140px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      &.export-button {
+        background: $primary-color;
+        
+        &:hover {
+          background: $secondary-color;
+        }
+      }
+    }
+  }
+
+  .save-profile-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    .profile-name-input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: white;
+      min-width: 200px;
+      margin: 0;
+
+      &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .save-confirm {
+      background: $primary-color;
+      margin: 0;
+      
+      &:hover {
+        background: $secondary-color;
+      }
+    }
+
+    .cancel {
+      margin: 0;
+      background: rgba(255, 0, 0, 0.2);
+      
+      &:hover {
+        background: rgba(255, 0, 0, 0.3);
+      }
+    }
+  }
 }
 
 button.test-button {
@@ -257,29 +385,4 @@ button.test-button {
 .color-picker-section {
   text-align: center;
   max-width: 40vw;
-}
-
-.button-group {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
-  
-  button {
-    min-width: 140px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    &.export-button {
-      background: $primary-color;
-      
-      &:hover {
-        background: $secondary-color;
-      }
-    }
-  }
 }
