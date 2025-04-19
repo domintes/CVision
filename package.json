@@ -1,18 +1,21 @@
 {
-  "name": "osu-beatmap-manager",
+  "name": "cvision",
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "start": "vite",
+    "start": "electron-forge start",
     "electron": "cross-env NODE_ENV=development electron .",
     "dev": "concurrently \"cross-env NODE_ENV=development VITE_DEV_SERVER_PORT=3001 vite --port 3001\" \"npm run electron\"",
     "web": "cross-env NODE_ENV=development vite --port 3001",
     "build": "cross-env NODE_ENV=production vite build",
     "lint": "eslint .",
-    "preview": "cross-env NODE_ENV=production vite preview"
+    "preview": "cross-env NODE_ENV=production vite preview",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "electron": "^35.1.3",
+    "electron-squirrel-startup": "^1.0.1",
     "glob": "^10.3.10",
     "html2pdf": "^0.0.11",
     "html2pdf.js": "^0.10.3",
@@ -26,6 +29,14 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.25.9",
+    "@electron-forge/cli": "^7.8.0",
+    "@electron-forge/maker-deb": "^7.8.0",
+    "@electron-forge/maker-rpm": "^7.8.0",
+    "@electron-forge/maker-squirrel": "^7.8.0",
+    "@electron-forge/maker-zip": "^7.8.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.0",
+    "@electron-forge/plugin-fuses": "^7.8.0",
+    "@electron/fuses": "^1.8.0",
     "@eslint/js": "^9.21.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -39,13 +50,17 @@
     "globals": "^15.15.0",
     "vite": "^6.2.1"
   },
-  "description": "Aplikacja do zarządzania beatmapami Osu!",
+  "description": "Interaktywna aplikacja do tworzenia CV i eksportowania go do PDF. Aplikacja stworzona w React, korzysta z Electron jako framework do budowy aplikacji desktopowych, dzięki czemu można korzystać z aplikacji lokalnie, na komputerze, bez potrzeby uruchamiania w przeglądarce internetowej.",
   "main": "main.js",
   "keywords": [
-    "osu",
-    "beatmap",
-    "manager"
+    "react",
+    "electron",
+    "cv",
+    "cvision",
+    "cv-creator",
+    "custom cv creator elektron desktop app",
+    "cv maker react web app"
   ],
-  "author": "",
-  "license": "ISC"
+  "author": "Domintes",
+  "license": "MIT"
 }
