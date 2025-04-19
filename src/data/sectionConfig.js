@@ -7,17 +7,29 @@ export const sectionConfig = {
       {
         name: 'firstName',
         placeholderText: 'Imię',
-        type: 'text'
+        type: 'text',
+        validation: {
+          isRequired: true,
+          minLength: 2
+        }
       },
       {
         name: 'lastName',
         placeholderText: 'Nazwisko',
-        type: 'text'
+        type: 'text',
+        validation: {
+          isRequired: true,
+          minLength: 2
+        }
       },
       {
         name: 'address',
         placeholderText: 'Adres (np. Ulica 7D/2, Miasto, Kod pocztowy)',
-        type: 'textarea'
+        type: 'textarea',
+        validation: {
+          isRequired: true,
+          minLength: 10
+        }
       }
     ]
   },
@@ -71,17 +83,27 @@ export const sectionConfig = {
       {
         name: 'company',
         placeholderText: 'Nazwa firmy',
-        type: 'text'
+        type: 'text',
+        validation: {
+          isRequired: true,
+          minLength: 2
+        }
       },
       {
         name: 'position',
         placeholderText: 'Stanowisko',
-        type: 'text'
+        type: 'text',
+        validation: {
+          isRequired: true
+        }
       },
       {
         name: 'period',
         placeholderText: 'Okres',
-        type: 'text'
+        type: 'text',
+        validation: {
+          isRequired: true
+        }
       }
     ],
     isArray: true

@@ -3,6 +3,8 @@ import html2pdf from 'html2pdf.js';
 import './app.scss';
 import { useState, useEffect } from 'react';
 import CVisionSection from './components/CVisionSection';
+import CVTemplate from './components/CVTemplate';
+import { sectionConfig } from './data/sectionConfig';
 import {
   personalInfoAtom,
   skillsAtom,
@@ -12,8 +14,24 @@ import {
   customCategoriesAtom,
   selectedColorAtom,
   profileImageAtom,
-  sectionsOrderAtom
+  sectionsOrderAtom,
+  errorsAtom,
+  touchedFieldsAtom
 } from './store/atoms';
+
+const validate = (value, validation) => {
+  if (!validation) return null;
+  
+  if (validation.isRequired && (!value || value.trim() === '')) {
+    return 'To pole jest wymagane';
+  }
+  
+  if (validation.minLength && value.length < validation.minLength) {
+    return `Minimalna długość to ${validation.minLength} znaków`;
+  }
+  
+  return null;
+};
 
 const App = () => {
   const [personalInfo, setPersonalInfo] = useAtom(personalInfoAtom);
@@ -25,13 +43,14 @@ const App = () => {
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
   const [profileImage, setProfileImage] = useAtom(profileImageAtom);
   const [sections, setSections] = useAtom(sectionsOrderAtom);
+  const [errors, setErrors] = useAtom(errorsAtom);
+  const [touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
   const [testMode] = useState(1);
   const [savedProfiles, setSavedProfiles] = useState([]);
   const [showProfileList, setShowProfileList] = useState(false);
   const [showSaveInput, setShowSaveInput] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
 
-  // Load saved profiles on component mount
   useEffect(() => {
     const profiles = Object.keys(localStorage)
       .filter(key => key.startsWith('cvision-profile-'))
@@ -41,10 +60,6 @@ const App = () => {
       }));
     setSavedProfiles(profiles);
   }, []);
-
-  const handleInputChange = (e, field) => {
-    setPersonalInfo({ ...personalInfo, [field]: e.target.value });
-  };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -86,120 +101,59 @@ const App = () => {
     setSections(newSections);
   };
 
+  const validateAllFields = () => {
+    const allErrors = {};
+    let hasErrors = false;
+
+    // Validate personal info
+    sectionConfig.personalInfo.inputs.forEach(input => {
+      if (input.validation) {
+        const error = validate(personalInfo[input.name], input.validation);
+        if (error) {
+          allErrors[`personalInfo-${input.name}`] = error;
+          hasErrors = true;
+        }
+      }
+    });
+
+    // Validate experience
+    experience.forEach((exp, idx) => {
+      sectionConfig.experience.inputs.forEach(input => {
+        if (input.validation) {
+          const error = validate(exp[input.name], input.validation);
+          if (error) {
+            allErrors[`experience-${idx}-${input.name}`] = error;
+            hasErrors = true;
+          }
+        }
+      });
+    });
+
+    setErrors(allErrors);
+    setTouchedFields(
+      Object.keys(allErrors).reduce((acc, key) => ({ ...acc, [key]: true }), {})
+    );
+
+    return !hasErrors;
+  };
+
   const exportToPDF = () => {
+    if (!validateAllFields()) {
+      showNotification('Proszę wypełnić wszystkie wymagane pola', true);
+      return;
+    }
+
     const content = document.createElement('div');
-    content.innerHTML = `
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 0;
-              height: 1056px;
-            }
-            .container {
-              display: flex;
-              flex-direction: row;
-              width: 100%;
-              height: 1056px;
-            }
-            .left-section {
-              background-color: ${selectedColor};
-              color: white;
-              padding: 20px;
-              width: 30%;
-              box-sizing: border-box;
-              height: 1056px;
-            }
-            .right-section {
-              padding: 20px;
-              width: 70%;
-              box-sizing: border-box;
-              color: black;
-            }
-            .header {
-              color: ${selectedColor};
-              font-size: 18px;
-              text-transform: uppercase;
-              margin-bottom: 10px;
-            }
-            .content {
-              margin-bottom: 20px;
-            }
-            ul {
-              padding-left: 20px;
-            }
-            ul li {
-              margin-bottom: 5px;
-            }
-            .footer {
-              text-align: center;
-              margin-top: auto;
-              font-size: 12px;
-              color: gray;
-              position: absolute;
-              bottom: 24px;
-              left: 120px;
-              width: 100%;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="left-section">
-              ${profileImage ? `<img src="${profileImage}" style="width: 180px; height: 220px; object-fit: cover; margin-bottom: 20px;">` : ''}
-              <h2>${personalInfo.firstName} ${personalInfo.lastName}</h2>
-              <p>${personalInfo.address.replace(/,\s*$/, '')}</p>
-              ${interests.length > 0
-        ? `<h3>Zainteresowania:</h3><ul>${interests
-          .map((i) => `<li>${i}</li>`)
-          .join('')}</ul>`
-        : ''
-      }
-            </div>
-            <div class="right-section">
-              ${education.length > 0
-        ? `<div class="content"><div class="header">Wykształcenie</div>${education
-          .map(
-            (e) =>
-              `<p><strong>${e.school}</strong>, ${e.city}<br>${e.period}<br>${e.field}</p>`
-          )
-          .join('')}</div>`
-        : ''
-      }
-              ${experience.length > 0
-        ? `<div class="content"><div class="header">Doświadczenie</div>${experience
-          .map(
-            (e) =>
-              `<p><strong>${e.company}</strong><br>${e.position}<br>${e.period}</p>`
-          )
-          .join('')}</div>`
-        : ''
-      }
-              ${skills.length > 0
-        ? `<div class="content"><div class="header">Umiejętności</div><ul>${skills
-          .map((skill) => `<li>${skill}</li>`)
-          .join('')}</ul></div>`
-        : ''
-      }
-              ${customCategories
-        .map(
-          (cat) =>
-            `<div class="content"><div class="header">${cat.name}</div>${cat.items
-              .map((item) => `<p>${item}</p>`)
-              .join('')}</div>`
-        )
-        .join('')}
-            </div>
-          </div>
-          <div class="footer">
-            Niniejszy dokument zawiera dane osobowe i jest przeznaczony <br />
-            wyłącznie do celów rekrutacyjnych zgodnie z RODO.
-          </div>
-        </body>
-      </html>
-    `;
+    content.innerHTML = CVTemplate({
+      selectedColor,
+      profileImage,
+      personalInfo,
+      interests,
+      education,
+      experience,
+      skills,
+      customCategories
+    });
 
     const options = {
       margin: 0,
@@ -240,7 +194,6 @@ const App = () => {
     const profileId = `cvision-profile-${newProfileName}`;
     localStorage.setItem(profileId, JSON.stringify(data));
     
-    // Update saved profiles list
     setSavedProfiles(prev => {
       const exists = prev.some(p => p.id === profileId);
       if (!exists) {

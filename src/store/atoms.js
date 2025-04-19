@@ -3,6 +3,9 @@ import { sectionConfig } from '../data/sectionConfig';
 
 const createEmptyAtom = (defaultValue) => atom(defaultValue);
 
+export const errorsAtom = atom({});
+export const touchedFieldsAtom = atom({});
+
 export const personalInfoAtom = createEmptyAtom({
   firstName: '',
   lastName: '',

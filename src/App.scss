@@ -116,6 +116,7 @@ body {
 
   input[type="color"] {
     -webkit-appearance: none;
+    appearance: none;
     width: 50px;
     height: 50px;
     border: 2px solid white;
@@ -359,6 +360,47 @@ body {
       &:hover {
         background: rgba(255, 0, 0, 0.3);
       }
+    }
+  }
+
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .error-bubble {
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 0;
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #ff4444;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    z-index: 10;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 10px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid rgba(255, 0, 0, 0.1);
+    }
+  }
+
+  .input.error, .textarea.error {
+    border-color: rgba(255, 0, 0, 0.3);
+    
+    &:focus {
+      border-color: rgba(255, 0, 0, 0.5);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
     }
   }
 }

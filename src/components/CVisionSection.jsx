@@ -5,9 +5,25 @@ import {
   interestsAtom,
   educationAtom,
   experienceAtom,
-  customCategoriesAtom
+  customCategoriesAtom,
+  errorsAtom,
+  touchedFieldsAtom
 } from '../store/atoms';
 import { sectionConfig } from '../data/sectionConfig';
+
+const validate = (value, validation) => {
+  if (!validation) return null;
+  
+  if (validation.isRequired && (!value || value.trim() === '')) {
+    return 'To pole jest wymagane';
+  }
+  
+  if (validation.minLength && value.length < validation.minLength) {
+    return `Minimalna długość to ${validation.minLength} znaków`;
+  }
+  
+  return null;
+};
 
 const CVisionSection = ({ 
   section, 
@@ -23,14 +39,32 @@ const CVisionSection = ({
   const [education, setEducation] = useAtom(educationAtom);
   const [experience, setExperience] = useAtom(experienceAtom);
   const [customCategories, setCustomCategories] = useAtom(customCategoriesAtom);
+  const [errors, setErrors] = useAtom(errorsAtom);
+  const [touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
+
+  const handleInputBlur = (fieldId) => {
+    setTouchedFields(prev => ({ ...prev, [fieldId]: true }));
+  };
+
+  const validateField = (value, input, fieldId) => {
+    if (!input.validation) return;
+
+    const error = validate(value, input.validation);
+    setErrors(prev => ({
+      ...prev,
+      [fieldId]: error
+    }));
+  };
 
   const handleInputChange = (e, field, index, category) => {
     const value = e.target.value;
     const element = e.target;
+    const fieldId = index !== null ? `${category}-${index}-${field}` : `${category}-${field}`;
     
     switch(category) {
       case 'personalInfo':
         setPersonalInfo(prev => ({ ...prev, [field]: value }));
+        validateField(value, sectionConfig[category].inputs.find(i => i.name === field), fieldId);
         break;
       case 'skills':
         setSkills(prev => {
@@ -63,6 +97,8 @@ const CVisionSection = ({
           }
           return updated;
         });
+        const input = sectionConfig[category].inputs.find(i => i.name === field);
+        validateField(value, input, fieldId);
         break;
       default:
         break;
@@ -121,28 +157,37 @@ const CVisionSection = ({
     const [values] = getAtomByCategory(sectionId);
     
     return config.inputs?.map((input, inputIndex) => {
+      const fieldId = itemIndex !== null ? `${sectionId}-${itemIndex}-${input.name}` : `${sectionId}-${input.name}`;
+      const error = touchedFields[fieldId] ? errors[fieldId] : null;
+
       if (sectionId === 'personalInfo') {
         const InputComponent = input.type === 'textarea' ? 'textarea' : 'input';
         return (
-          <InputComponent
-            key={input.name}
-            type={input.type}
-            placeholder={input.placeholderText}
-            value={values[input.name] || ''}
-            onChange={(e) => handleInputChange(e, input.name, null, sectionId)}
-            className={input.type === 'textarea' ? 'textarea' : 'input'}
-          />
+          <div key={input.name} className="input-wrapper">
+            <InputComponent
+              type={input.type}
+              placeholder={input.placeholderText}
+              value={values[input.name] || ''}
+              onChange={(e) => handleInputChange(e, input.name, null, sectionId)}
+              onBlur={() => handleInputBlur(fieldId)}
+              className={`${input.type === 'textarea' ? 'textarea' : 'input'} ${error ? 'error' : ''}`}
+            />
+            {error && <div className="error-bubble">{error}</div>}
+          </div>
         );
       } else if (config.isArray && !input.isArray) {
         return (
-          <input
-            key={`${input.name}-${itemIndex}`}
-            type={input.type}
-            placeholder={input.placeholderText}
-            value={values[itemIndex]?.[input.name] || ''}
-            onChange={(e) => handleInputChange(e, input.name, itemIndex, sectionId)}
-            className="input"
-          />
+          <div key={`${input.name}-${itemIndex}`} className="input-wrapper">
+            <input
+              type={input.type}
+              placeholder={input.placeholderText}
+              value={values[itemIndex]?.[input.name] || ''}
+              onChange={(e) => handleInputChange(e, input.name, itemIndex, sectionId)}
+              onBlur={() => handleInputBlur(fieldId)}
+              className={`input ${error ? 'error' : ''}`}
+            />
+            {error && <div className="error-bubble">{error}</div>}
+          </div>
         );
       } else if (input.isArray) {
         return (

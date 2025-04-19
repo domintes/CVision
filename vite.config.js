@@ -11,6 +11,15 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    chunkSizeWarningLimit: 1000, // Increase the warning limit to 1000kb
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'jotai'],
+          'pdf': ['html2pdf.js']
+        }
+      }
+    }
   },
   esbuild: {
     jsxInject: `import React from 'react'`

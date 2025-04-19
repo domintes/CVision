@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 1056px;
+      }
+      .container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 1056px;
+      }
+      .left-section {
+        color: white;
+        padding: 20px;
+        width: 30%;
+        box-sizing: border-box;
+        height: 1056px;
+      }
+      .right-section {
+        padding: 20px;
+        width: 70%;
+        box-sizing: border-box;
+        color: black;
+      }
+      .header {
+        font-size: 18px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .content {
+        margin-bottom: 20px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      ul li {
+        margin-bottom: 5px;
+      }
+      .footer {
+        text-align: center;
+        margin-top: auto;
+        font-size: 12px;
+        color: gray;
+        position: absolute;
+        bottom: 24px;
+        left: 120px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-section">
+        <img src="{{profileImage}}" style="width: 180px; height: 220px; object-fit: cover; margin-bottom: 20px;">
+        <h2>{{firstName}} {{lastName}}</h2>
+        <p>{{address}}</p>
+        {{#if interests}}
+        <h3>Zainteresowania:</h3>
+        <ul>
+          {{#each interests}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+        {{/if}}
+      </div>
+      <div class="right-section">
+        {{#if education}}
+        <div class="content">
+          <div class="header">Wykształcenie</div>
+          {{#each education}}
+          <p><strong>{{school}}</strong>, {{city}}<br>{{period}}<br>{{field}}</p>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{#if experience}}
+        <div class="content">
+          <div class="header">Doświadczenie</div>
+          {{#each experience}}
+          <p><strong>{{company}}</strong><br>{{position}}<br>{{period}}</p>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{#if skills}}
+        <div class="content">
+          <div class="header">Umiejętności</div>
+          <ul>
+            {{#each skills}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+        {{/if}}
+
+        {{#each customCategories}}
+        <div class="content">
+          <div class="header">{{name}}</div>
+          {{#each items}}
+          <p>{{this}}</p>
+          {{/each}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    <div class="footer">
+      Niniejszy dokument zawiera dane osobowe i jest przeznaczony <br />
+      wyłącznie do celów rekrutacyjnych zgodnie z RODO.
+    </div>
+  </body>
+</html>
