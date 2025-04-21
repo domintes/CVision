@@ -29,12 +29,17 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: true,
       sandbox: false,
-      webSecurity: false,
+      webSecurity: true,
     },
   })
 
   if (process.env.NODE_ENV === 'production') {
-    mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'))
+    // Use path.join to ensure correct path resolution
+    const indexPath = path.join(__dirname, 'dist', 'index.html')
+    console.log('Loading production file from:', indexPath)
+    mainWindow.loadFile(indexPath)
+    // Open DevTools in production temporarily to debug
+    mainWindow.webContents.openDevTools()
   } else {
     const port = process.env.VITE_DEV_SERVER_PORT || 3001
     mainWindow.loadURL(`http://localhost:${port}`)
