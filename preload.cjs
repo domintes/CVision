@@ -31,7 +31,8 @@ contextBridge.exposeInMainWorld('electron', {
         'save-file-dialog',
         'save-profile',
         'load-profile',
-        'get-profiles'
+        'get-profiles',
+        'delete-profile'
       ];
       if (validChannels.includes(channel)) {
         return ipcRenderer.invoke(channel, data);

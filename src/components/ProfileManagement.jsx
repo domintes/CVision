@@ -28,22 +28,25 @@ const checkProfileCompletion = (profileData) => {
   return hasRequiredPersonalInfo && hasRequiredExperience;
 };
 
-const loadSavedProfiles = () => {
-  const profiles = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key?.startsWith('cvision-profile-')) {
-      try {
-        const data = JSON.parse(localStorage.getItem(key));
-        const name = key.replace('cvision-profile-', '');
-        const isComplete = checkProfileCompletion(data);
-        profiles.push({ id: key, name, isComplete, data });
-      } catch (e) {
-        console.error('Error loading profile:', e);
+const loadSavedProfiles = async () => {
+  try {
+    const result = await window.electron.ipcRenderer.invoke('get-profiles');
+    if (result.success) {
+      const profiles = [];
+      for (const name of result.profiles) {
+        const profileResult = await window.electron.ipcRenderer.invoke('load-profile', name);
+        if (profileResult.success) {
+          const isComplete = checkProfileCompletion(profileResult.data);
+          profiles.push({ id: name, name, isComplete, data: profileResult.data });
+        }
       }
+      return profiles;
     }
+    return [];
+  } catch (e) {
+    console.error('Error loading profiles:', e);
+    return [];
   }
-  return profiles;
 };
 
 const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
@@ -64,10 +67,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
 
   // Load saved profiles on mount
   useEffect(() => {
-    setSavedProfiles(loadSavedProfiles());
+    const fetchProfiles = async () => {
+      const profiles = await loadSavedProfiles();
+      setSavedProfiles(profiles);
+    };
+    fetchProfiles();
   }, []);
 
-  const saveData = (profileName = newProfileName) => {
+  const saveData = async (profileName = newProfileName) => {
     if (typeof profileName !== 'string') {
       profileName = String(profileName || newProfileName || '');
     }
@@ -100,24 +107,32 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
     };
 
     try {
-      const profileId = `cvision-profile-${profileName}`;
-      localStorage.setItem(profileId, JSON.stringify(data));
-      setSavedProfiles(loadSavedProfiles());
-      showNotification('Profil został zapisany');
-      setShowSaveInput(false);
-      setNewProfileName('');
-      setEditingProfile(null);
+      const result = await window.electron.ipcRenderer.invoke('save-profile', {
+        data,
+        profileName: profileName.trim()
+      });
+      
+      if (result.success) {
+        const updatedProfiles = await loadSavedProfiles();
+        setSavedProfiles(updatedProfiles);
+        showNotification('Profil został zapisany');
+        setShowSaveInput(false);
+        setNewProfileName('');
+        setEditingProfile(null);
+      } else {
+        throw new Error(result.error);
+      }
     } catch (e) {
       showNotification('Błąd podczas zapisywania profilu', true);
       console.error('Error saving profile:', e);
     }
   };
 
-  const loadData = (profileId) => {
+  const loadData = async (profileId) => {
     try {
-      const savedData = localStorage.getItem(profileId);
-      if (savedData) {
-        const data = JSON.parse(savedData);
+      const result = await window.electron.ipcRenderer.invoke('load-profile', profileId);
+      if (result.success) {
+        const data = result.data;
         
         setPersonalInfo(data.personalInfo || {});
         setSkills(data.skills || []);
@@ -131,6 +146,8 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         
         showNotification('Profil został wczytany');
         setShowProfileList(false);
+      } else {
+        throw new Error(result.error);
       }
     } catch (e) {
       showNotification('Błąd podczas wczytywania profilu', true);
@@ -138,13 +155,17 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
     }
   };
 
-  const deleteProfile = (profileId, event) => {
+  const deleteProfile = async (profileId, event) => {
     event.stopPropagation();
     if (window.confirm('Czy na pewno chcesz usunąć ten profil?')) {
       try {
-        localStorage.removeItem(profileId);
-        setSavedProfiles(prev => prev.filter(profile => profile.id !== profileId));
-        showNotification('Profil został usunięty');
+        const result = await window.electron.ipcRenderer.invoke('delete-profile', profileId);
+        if (result.success) {
+          setSavedProfiles(prev => prev.filter(profile => profile.id !== profileId));
+          showNotification('Profil został usunięty');
+        } else {
+          throw new Error(result.error);
+        }
       } catch (e) {
         showNotification('Błąd podczas usuwania profilu', true);
         console.error('Error deleting profile:', e);

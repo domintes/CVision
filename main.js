@@ -83,6 +83,16 @@ function setupIpcHandlers() {
     }
   });
 
+  ipcMain.handle('delete-profile', async (event, profileName) => {
+    try {
+      const filePath = path.join(profilesDir, `${profileName}.json`);
+      require('fs').unlinkSync(filePath);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
   ipcMain.handle('get-profiles', async () => {
     try {
       const files = readdirSync(profilesDir);
