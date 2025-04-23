@@ -32,7 +32,9 @@ contextBridge.exposeInMainWorld('electron', {
         'save-profile',
         'load-profile',
         'get-profiles',
-        'delete-profile'
+        'delete-profile',
+        'export-profile',
+        'import-profile'
       ];
       if (validChannels.includes(channel)) {
         return ipcRenderer.invoke(channel, data);

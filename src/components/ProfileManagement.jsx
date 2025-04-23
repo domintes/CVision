@@ -173,6 +173,50 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
     }
   };
 
+  const exportProfile = async (profileData) => {
+    try {
+      const result = await window.electron.ipcRenderer.invoke('export-profile', {
+        data: profileData
+      });
+      
+      if (result.success) {
+        showNotification('Profil został wyeksportowany');
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (e) {
+      showNotification('Błąd podczas eksportowania profilu', true);
+      console.error('Error exporting profile:', e);
+    }
+  };
+
+  const importProfileFromFile = async () => {
+    try {
+      const result = await window.electron.ipcRenderer.invoke('import-profile');
+      if (result.success) {
+        const data = result.data;
+        
+        setPersonalInfo(data.personalInfo || {});
+        setSkills(data.skills || []);
+        setInterests(data.interests || []);
+        setEducation(data.education || []);
+        setExperience(data.experience || []);
+        setCustomCategories(data.customCategories || []);
+        setSelectedColor(data.selectedColor || '#001f3f');
+        setProfileImage(data.profileImage || null);
+        setSections(data.sections || []);
+        
+        showNotification('Profil został wczytany z pliku');
+        setShowProfileList(false);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (e) {
+      showNotification('Błąd podczas wczytywania profilu z pliku', true);
+      console.error('Error importing profile:', e);
+    }
+  };
+
   return (
     <>
       {showSaveInput ? (
@@ -222,9 +266,30 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
           </div>
         </div>
       ) : (
-        <button onClick={() => setShowSaveInput(true)} className="button">
-          Zapisz profil
-        </button>
+        <div className="button-group">
+          <button onClick={() => setShowSaveInput(true)} className="button">
+            Zapisz profil
+          </button>
+          <button 
+            onClick={() => exportProfile({
+              personalInfo,
+              skills,
+              interests,
+              education,
+              experience,
+              customCategories,
+              selectedColor,
+              profileImage,
+              sections
+            })} 
+            className="button"
+          >
+            Eksportuj profil
+          </button>
+          <button onClick={importProfileFromFile} className="button">
+            Wczytaj profil z pliku
+          </button>
+        </div>
       )}
 
       {showProfileList && savedProfiles.length > 0 && (

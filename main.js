@@ -104,6 +104,40 @@ function setupIpcHandlers() {
       return { success: false, error: error.message };
     }
   });
+
+  ipcMain.handle('export-profile', async (event, { data }) => {
+    try {
+      const { filePath } = await dialog.showSaveDialog({
+        defaultPath: `cv_profile_${data.personalInfo?.firstName || 'export'}.json`,
+        filters: [{ name: 'JSON Files', extensions: ['json'] }]
+      });
+
+      if (filePath) {
+        writeFileSync(filePath, JSON.stringify(data, null, 2));
+        return { success: true };
+      }
+      return { success: false, error: 'No file path selected' };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
+  ipcMain.handle('import-profile', async () => {
+    try {
+      const { filePaths } = await dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [{ name: 'JSON Files', extensions: ['json'] }]
+      });
+
+      if (filePaths && filePaths[0]) {
+        const data = readFileSync(filePaths[0], 'utf8');
+        return { success: true, data: JSON.parse(data) };
+      }
+      return { success: false, error: 'No file selected' };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
 }
 
 app.whenReady().then(() => {

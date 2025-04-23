@@ -387,6 +387,7 @@ body {
 
   .button-group {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
@@ -395,6 +396,7 @@ body {
       min-width: 140px;
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
+      white-space: nowrap;
       
       &:hover {
         background: rgba(255, 255, 255, 0.2);
@@ -405,6 +407,14 @@ body {
         
         &:hover {
           background: $secondary-color;
+        }
+      }
+
+      &.import-button {
+        background: rgba(255, 255, 255, 0.15);
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.25);
         }
       }
     }
