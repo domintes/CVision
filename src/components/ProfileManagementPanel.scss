@@ -1,0 +1,268 @@
+// Variables
+$primary-color: #007bff;
+$secondary-color: #0056b3;
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  background: rgba(20, 27, 33, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 8px;
+  z-index: 1000;
+  height: 48px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0;
+  
+  button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
+    height: 32px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    &.export-button {
+      background: $primary-color;
+      
+      &:hover {
+        background: $secondary-color;
+      }
+    }
+
+    &.import-button {
+      background: rgba(255, 255, 255, 0.15);
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+    }
+
+    &.test-button {
+      position: relative;
+      background-color: transparent !important;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+.profiles-list {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: 350px;
+  max-width: 380px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+
+  h3 {
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .saved-profiles {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    .profile-item {
+      display: grid;
+      grid-template-columns: 3fr 2fr 38px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      &.editing {
+        background: rgba(0, 123, 255, 0.15);
+        border: 1px solid rgba(0, 123, 255, 0.3);
+      }
+
+      .user-profile-name {
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      button {
+        margin: 0;
+        padding: 6px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &.load-profile {
+          background: $primary-color;
+          border: none;
+          
+          &:hover {
+            background: $secondary-color;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.delete-profile {
+          background: #bf2222;
+          border: 1px solid rgba(255, 0, 0, 0.2);
+          color: rgba(255, 255, 255, 0.8);
+          padding: 6px 10px;
+          &:hover {
+            background: rgba(255, 0, 0, 0.2);
+            color: white;
+          }
+        }
+
+        &.finish-editing {
+          background: $primary-color;
+          color: white;
+          border: none;
+          &:hover {
+            background: $secondary-color;
+          }
+        }
+      }
+    }
+  }
+}
+
+.load-profile-header-section {
+  display: grid;
+  grid-template-columns: 1fr auto 40px;
+  column-gap: 8px;
+  align-items: center;
+  margin-bottom: 15px;
+
+  .close-profile-panel-button {
+    width: 40px;
+    background-color: transparent;
+    &:hover {
+      color: rgb(202, 99, 99) !important;
+      background-color: transparent;
+    }
+  }
+}
+
+.save-profile-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  max-width: 400px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  h4 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .save-profile-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    .profile-name-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 14px;
+      transition: all 0.2s ease;
+
+      &:focus {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        outline: none;
+      }
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    button {
+      margin: 0;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+
+      &.save-confirm {
+        background: $primary-color;
+        border: none;
+        
+        &:hover {
+          background: $secondary-color;
+          transform: translateY(-1px);
+        }
+      }
+
+      &.cancel {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.2);
+        
+        &:hover {
+          background: rgba(255, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+}

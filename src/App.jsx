@@ -3,7 +3,7 @@ import './app.scss';
 import CVisionSection from './components/CVisionSection';
 import ProfileImage from './components/ProfileImage';
 import ColorPicker from './components/ColorPicker';
-import ButtonGroup from './components/ButtonGroup';
+import ProfileManagementPanel from './components/ProfileManagementPanel';
 import { sectionsOrderAtom } from './store/atoms';
 
 const App = () => {
@@ -42,6 +42,7 @@ const App = () => {
     <div className="cv-builder bg-gray-800 text-white p-6">
       <h1 className="app-header text-2xl mb-4">CVision</h1>
 
+      <ProfileManagementPanel />
       <ProfileImage />
 
       {sections.map((section, index) => (
@@ -57,7 +58,6 @@ const App = () => {
       ))}
 
       <ColorPicker />
-      <ButtonGroup />
     </div>
   );
 };
