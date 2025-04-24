@@ -306,16 +306,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
 
       {showProfileList && savedProfiles.length > 0 && (
         <div className="profiles-list">
-          <div className="profiles-header">
+          <div className="load-profile-header-section">
             <h3>Wczytaj profil</h3>
-            <div className="header-buttons">
-              <button onClick={importProfileFromFile} className="import-profile-btn">
-                Wczytaj profil z pliku
-              </button>
-              <button onClick={() => setShowProfileList(false)} className="close-profile-panel-button">
-                ✕
-              </button>
-            </div>
+            <button onClick={importProfileFromFile} className="import-profile-btn">
+              Wczytaj profil z pliku
+            </button>
+            <button onClick={() => setShowProfileList(false)} className="close-profile-panel-button">
+              ✕
+            </button>
           </div>
           <div className="profile-management-grid">
             <div className="saved-profiles">

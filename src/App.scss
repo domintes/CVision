@@ -147,8 +147,6 @@ body {
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
-
     &:hover {
       background: #0056b3;
     }
@@ -251,11 +249,10 @@ body {
 
     h3 {
       margin: 0;
-      padding: 0 0 12px 0;
+      padding: 0;
       color: white;
       font-size: 18px;
       font-weight: 500;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .saved-profiles {
@@ -611,19 +608,20 @@ body {
   }
 }
 
-.header-buttons {
+.load-profile-header-section {
   display: grid;
+  grid-template-columns: 1fr 2fr;
+  column-gap: 8px;
   align-items: center;
-  grid-template-columns: 4fr 40px;
-  column-gap: 8px;;
-  .close-profile-panel-button {
-    width: 40px;
-    background-color: transparent;
-    &:hover {
-      color: rgb(202, 99, 99) !important;
+  grid-template-columns: 1fr auto 40px;
+    .close-profile-panel-button {
+      width: 40px;
       background-color: transparent;
+      &:hover {
+        color: rgb(202, 99, 99) !important;
+        background-color: transparent;
+      }
     }
-  }
 }
 
 button.test-button {
