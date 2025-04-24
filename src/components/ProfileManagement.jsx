@@ -193,6 +193,18 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
   const importProfileFromFile = async () => {
     try {
       const result = await window.electron.ipcRenderer.invoke('import-profile');
+      
+      // If user cancelled file selection, just return silently
+      if (result.cancelled) {
+        return;
+      }
+
+      // If there's an invalid file format
+      if (result.error === 'invalid_format') {
+        showNotification('Nieprawidłowy format pliku', true);
+        return;
+      }
+
       if (result.success) {
         const data = result.data;
         
@@ -212,8 +224,11 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         throw new Error(result.error);
       }
     } catch (e) {
-      showNotification('Błąd podczas wczytywania profilu z pliku', true);
-      console.error('Error importing profile:', e);
+      // Only show error notification for actual errors, not cancellation
+      if (e.message !== 'No file selected') {
+        showNotification('Błąd podczas wczytywania profilu z pliku', true);
+        console.error('Error importing profile:', e);
+      }
     }
   };
 
@@ -300,17 +315,16 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
               {savedProfiles.map(profile => (
                 <div 
                   key={profile.id} 
-                  className={`profile-item ${editingProfile === profile.id ? 'editing' : ''}`} 
+                  className={`${'profile-item'} ${editingProfile === profile.id ? 'editing' : ''}`} 
                   onClick={() => {
                     if (!editingProfile) {
                       setEditingProfile(profile.id);
                     }
                   }}
                 >
-                  <span>{profile.name}</span>
-                  <div className="profile-actions">
+                  <div className='user-profile-name'>{profile.name}</div>
                     {editingProfile === profile.id ? (
-                      <button 
+                      <button
                         onClick={() => {
                           if (profile.name) {
                             saveData(profile.name);
@@ -342,7 +356,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
                         </button>
                       </>
                     )}
-                  </div>
                 </div>
               ))}
             </div>
