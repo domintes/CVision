@@ -386,12 +386,26 @@ body {
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
-    margin-top: 20px;
+    position: sticky;
+    top: 0;
+    background: rgba(20, 27, 33, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 8px;
+    z-index: 1000;
+    height: 48px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0;
     
     button {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
       white-space: nowrap;
+      height: 32px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      margin: 0;
       
       &:hover {
         background: rgba(255, 255, 255, 0.2);
@@ -593,6 +607,21 @@ body {
           }
         }
       }
+    }
+  }
+}
+
+.header-buttons {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 4fr 40px;
+  column-gap: 8px;;
+  .close-profile-panel-button {
+    width: 40px;
+    background-color: transparent;
+    &:hover {
+      color: rgb(202, 99, 99) !important;
+      background-color: transparent;
     }
   }
 }

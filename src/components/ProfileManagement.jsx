@@ -301,15 +301,22 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
           >
             Eksportuj profil
           </button>
-          <button onClick={importProfileFromFile} className="button">
-            Wczytaj profil z pliku
-          </button>
         </div>
       )}
 
       {showProfileList && savedProfiles.length > 0 && (
         <div className="profiles-list">
-          <h3>Wczytaj profil</h3>
+          <div className="profiles-header">
+            <h3>Wczytaj profil</h3>
+            <div className="header-buttons">
+              <button onClick={importProfileFromFile} className="import-profile-btn">
+                Wczytaj profil z pliku
+              </button>
+              <button onClick={() => setShowProfileList(false)} className="close-profile-panel-button">
+                ✕
+              </button>
+            </div>
+          </div>
           <div className="profile-management-grid">
             <div className="saved-profiles">
               {savedProfiles.map(profile => (

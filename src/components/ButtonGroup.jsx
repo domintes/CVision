@@ -142,26 +142,28 @@ const ButtonGroup = () => {
   };
 
   return (
-    <div className="button-group">
-      <button onClick={exportToPDF} className="export-button">
-        Wyeksportuj jako PDF
-      </button>
-      
+    <>
+      <div className="button-group">
+        <button onClick={exportToPDF} className="export-button">
+          Wyeksportuj jako PDF
+        </button>
+        
+        <button onClick={() => setShowProfileList(!showProfileList)} className="button">
+          Wczytaj profil
+        </button>
+
+        {testMode === 1 && (
+          <button onClick={populateTestData} className="test-button">
+            Wypełnij danymi testowymi
+          </button>
+        )}
+      </div>
+
       <ProfileManagement 
         showProfileList={showProfileList}
         setShowProfileList={setShowProfileList}
       />
-
-      <button onClick={() => setShowProfileList(!showProfileList)} className="button">
-        Wczytaj profil
-      </button>
-
-      {testMode === 1 && (
-        <button onClick={populateTestData} className="test-button">
-          Wypełnij danymi testowymi
-        </button>
-      )}
-    </div>
+    </>
   );
 };
 
