@@ -63,9 +63,10 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
   const [rightSections, setRightSections] = useAtom(rightSectionsOrderAtom);
 
   const [savedProfiles, setSavedProfiles] = useState([]);
-  const [showSaveInput, setShowSaveInput] = useState(false);
+  const [showSavePanel, setShowSavePanel] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
   const [editingProfile, setEditingProfile] = useState(null);
+  const [saveMode, setSaveMode] = useState('new'); // 'new' or 'replace'
 
   // Load saved profiles on mount
   useEffect(() => {
@@ -76,21 +77,7 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
     fetchProfiles();
   }, []);
 
-  const saveData = async (profileName = newProfileName) => {
-    if (typeof profileName !== 'string') {
-      profileName = String(profileName || newProfileName || '');
-    }
-    
-    if (!profileName && !showSaveInput) {
-      setShowSaveInput(true);
-      // Focus the input after showing it
-      setTimeout(() => {
-        const input = document.querySelector('.profile-name-input');
-        if (input) input.focus();
-      }, 0);
-      return;
-    }
-
+  const saveData = async (profileName = newProfileName, mode = saveMode) => {
     if (!profileName.trim()) {
       showNotification('Podaj nazwę profilu', true);
       return;
@@ -110,6 +97,13 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
     };
 
     try {
+      if (mode === 'replace') {
+        // Confirm before replacing
+        if (!window.confirm('Czy na pewno chcesz nadpisać istniejący profil?')) {
+          return;
+        }
+      }
+
       const result = await window.electron.ipcRenderer.invoke('save-profile', {
         data,
         profileName: profileName.trim()
@@ -119,9 +113,9 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         const updatedProfiles = await loadSavedProfiles();
         setSavedProfiles(updatedProfiles);
         showNotification('Profil został zapisany');
-        setShowSaveInput(false);
+        setShowSavePanel(false);
         setNewProfileName('');
-        setEditingProfile(null);
+        setSaveMode('new');
       } else {
         throw new Error(result.error);
       }
@@ -239,74 +233,98 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
 
   return (
     <>
-      {showSaveInput ? (
-        <div className="save-profile-section">
-          <h4>Utwórz nowy profil</h4>
-          <div className="save-profile-input">
-            <input
-              type="text"
-              value={newProfileName}
-              onChange={(e) => setNewProfileName(e.target.value)}
-              placeholder="Nazwa profilu"
-              className="profile-name-input"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && newProfileName?.trim()) {
-                  e.preventDefault();
-                  saveData(newProfileName);
-                } else if (e.key === 'Escape') {
-                  e.preventDefault();
-                  setShowSaveInput(false);
-                  setNewProfileName('');
-                }
-              }}
-            />
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                if (newProfileName?.trim()) {
-                  saveData(newProfileName);
-                } else {
-                  showNotification('Podaj nazwę profilu', true);
-                }
-              }} 
-              className="button save-confirm"
-            >
-              Zapisz
-            </button>
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                setShowSaveInput(false);
-                setNewProfileName('');
-              }} 
-              className="button cancel"
-            >
-              Anuluj
+      <div className="button-group">
+        <button onClick={() => setShowSavePanel(!showSavePanel)} className="button">
+          Zapisz profil
+        </button>
+        <button onClick={() => setShowProfileList(!showProfileList)} className="button">
+          Wczytaj profil
+        </button>
+        <button 
+          onClick={() => exportProfile({
+            personalInfo,
+            skills,
+            interests,
+            traits,
+            education,
+            experience,
+            selectedColor,
+            profileImage,
+            leftSections,
+            rightSections
+          })} 
+          className="button"
+        >
+          Eksportuj profil
+        </button>
+      </div>
+
+      {showSavePanel && (
+        <div className="profiles-list">
+          <div className="load-profile-header-section">
+            <h3>Zapisz profil</h3>
+            <button onClick={() => setShowSavePanel(false)} className="close-profile-panel-button">
+              ✕
             </button>
           </div>
-        </div>
-      ) : (
-        <div className="button-group">
-          <button onClick={() => setShowSaveInput(true)} className="button">
-            Zapisz profil
-          </button>
-          <button 
-            onClick={() => exportProfile({
-              personalInfo,
-              skills,
-              interests,
-              traits,
-              education,
-              experience,
-              selectedColor,
-              profileImage,
-              leftSections,
-              rightSections
-            })} 
-            className="button"
-          >
-            Eksportuj profil
-          </button>
+          
+          <div className="save-profile-section">
+            <h4>Utwórz nowy profil</h4>
+            <div className="save-profile-input">
+              <input
+                type="text"
+                value={newProfileName}
+                onChange={(e) => setNewProfileName(e.target.value)}
+                placeholder="Nazwa profilu"
+                className="profile-name-input"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && newProfileName?.trim()) {
+                    e.preventDefault();
+                    saveData(newProfileName, 'new');
+                  } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    setShowSavePanel(false);
+                    setNewProfileName('');
+                  }
+                }}
+              />
+              <button 
+                onClick={() => {
+                  if (newProfileName?.trim()) {
+                    saveData(newProfileName, 'new');
+                  } else {
+                    showNotification('Podaj nazwę profilu', true);
+                  }
+                }} 
+                className="button save-confirm"
+              >
+                Zapisz
+              </button>
+            </div>
+          </div>
+
+          {savedProfiles.length > 0 && (
+            <div className="saved-profiles">
+              <h4>Istniejące profile</h4>
+              {savedProfiles.map(profile => (
+                <div key={profile.id} className="profile-item">
+                  <div className="user-profile-name">{profile.name}</div>
+                  <button 
+                    onClick={() => saveData(profile.name, 'replace')} 
+                    className="replace-profile"
+                  >
+                    Nadpisz
+                  </button>
+                  <button 
+                    onClick={(e) => deleteProfile(profile.id, e)} 
+                    className="delete-profile"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -321,55 +339,24 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
               ✕
             </button>
           </div>
-          <div className="profile-management-grid">
-            <div className="saved-profiles">
-              {savedProfiles.map(profile => (
-                <div 
-                  key={profile.id} 
-                  className={`${'profile-item'} ${editingProfile === profile.id ? 'editing' : ''}`} 
-                  onClick={() => {
-                    if (!editingProfile) {
-                      setEditingProfile(profile.id);
-                    }
-                  }}
+          <div className="saved-profiles">
+            {savedProfiles.map(profile => (
+              <div key={profile.id} className="profile-item">
+                <div className="user-profile-name">{profile.name}</div>
+                <button 
+                  onClick={() => loadData(profile.id)} 
+                  className="load-profile"
                 >
-                  <div className='user-profile-name'>{profile.name}</div>
-                    {editingProfile === profile.id ? (
-                      <button
-                        onClick={() => {
-                          if (profile.name) {
-                            saveData(profile.name);
-                            setEditingProfile(null);
-                          } else {
-                            showNotification('Nieprawidłowa nazwa profilu', true);
-                          }
-                        }} 
-                        className="finish-editing"
-                      >
-                        Zakończ edycję
-                      </button>
-                    ) : (
-                      <>
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            loadData(profile.id);
-                          }} 
-                          className="load-profile"
-                        >
-                          Wczytaj
-                        </button>
-                        <button 
-                          onClick={(e) => deleteProfile(profile.id, e)} 
-                          className="delete-profile"
-                        >
-                          ✕
-                        </button>
-                      </>
-                    )}
-                </div>
-              ))}
-            </div>
+                  Wczytaj
+                </button>
+                <button 
+                  onClick={(e) => deleteProfile(profile.id, e)} 
+                  className="delete-profile"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
