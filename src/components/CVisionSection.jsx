@@ -6,7 +6,6 @@ import {
   traitsAtom,
   educationAtom,
   experienceAtom,
-  customCategoriesAtom,
   errorsAtom,
   touchedFieldsAtom
 } from '../store/atoms';
@@ -26,14 +25,15 @@ const validate = (value, validation) => {
   return null;
 };
 
-const CVisionSection = ({ 
-  section, 
-  index, 
+const CVisionSection = ({
+  section,
+  index,
   sectionType,
-  onDragStart, 
-  onDragOver, 
-  onDrop, 
-  onMove 
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onMove,
+  totalSections
 }) => {
   const [personalInfo, setPersonalInfo] = useAtom(personalInfoAtom);
   const [skills, setSkills] = useAtom(skillsAtom);
@@ -41,7 +41,6 @@ const CVisionSection = ({
   const [traits, setTraits] = useAtom(traitsAtom);
   const [education, setEducation] = useAtom(educationAtom);
   const [experience, setExperience] = useAtom(experienceAtom);
-  const [customCategories, setCustomCategories] = useAtom(customCategoriesAtom);
   const [errors, setErrors] = useAtom(errorsAtom);
   const [touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
 
@@ -122,7 +121,6 @@ const CVisionSection = ({
     requestAnimationFrame(() => {
       if (document.activeElement !== element) {
         element.focus();
-        // Restore cursor position
         try {
           element.setSelectionRange(selectionStart, selectionEnd);
         } catch (e) {
@@ -165,8 +163,6 @@ const CVisionSection = ({
         return [education, setEducation];
       case 'experience':
         return [experience, setExperience];
-      case 'custom':
-        return [customCategories, setCustomCategories];
       default:
         return [null, () => {}];
     }
@@ -236,57 +232,6 @@ const CVisionSection = ({
     const config = sectionConfig[section.id];
     if (!config) return null;
 
-    if (section.id === 'custom') {
-      return (
-        <div className="section-content custom-section">
-          {customCategories.map((category, idx) => (
-            <div key={idx} className="custom-category">
-              <input
-                type="text"
-                placeholder="Nazwa kategorii"
-                value={category.name}
-                onChange={(e) => {
-                  const updated = [...customCategories];
-                  updated[idx].name = e.target.value;
-                  setCustomCategories(updated);
-                }}
-                className="input"
-              />
-              {category.items.map((item, itemIndex) => (
-                <input
-                  key={itemIndex}
-                  type="text"
-                  placeholder={`Element ${itemIndex + 1}`}
-                  value={item}
-                  onChange={(e) => {
-                    const updated = [...customCategories];
-                    updated[idx].items[itemIndex] = e.target.value;
-                    setCustomCategories(updated);
-                  }}
-                  className="input"
-                />
-              ))}
-              {category.items.length < 10 && (
-                <button 
-                  onClick={() => {
-                    const updated = [...customCategories];
-                    updated[idx].items.push('');
-                    setCustomCategories(updated);
-                  }} 
-                  className="button add-element-button"
-                >
-                  + Dodaj element
-                </button>
-              )}
-            </div>
-          ))}
-          <button onClick={() => setCustomCategories([...customCategories, { name: '', items: [''] }])} className="button">
-            + Dodaj kategorię niestandardową
-          </button>
-        </div>
-      );
-    }
-
     return (
       <div className={`section-content ${section.id}-section`}>
         {config.isArray ? (
@@ -319,36 +264,40 @@ const CVisionSection = ({
   return (
     <div
       className={`section ${section.id}-section`}
-      draggable={true}
-      onDragStart={(e) => onDragStart(e, index)}
+      draggable={!section.isFixed}
+      onDragStart={(e) => !section.isFixed && onDragStart(e, index)}
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, index)}
       onDragEnter={(e) => e.currentTarget.classList.add('dragging-over')}
       onDragLeave={(e) => e.currentTarget.classList.remove('dragging-over')}
     >
       <div className="section-header">
-        <div className="drag-handle" title="Przeciągnij aby zmienić kolejność">
-          <span>⋮⋮</span>
-        </div>
+        {!section.isFixed && (
+          <div className="drag-handle" title="Przeciągnij aby zmienić kolejność">
+            <span>⋮⋮</span>
+          </div>
+        )}
         <h2>{sectionConfig[section.id]?.title || section.title}</h2>
-        <div className="section-controls">
-          <button
-            onClick={() => onMove(index, 'up')}
-            className="order-button"
-            disabled={index === 0}
-            title="Przesuń sekcję w górę"
-          >
-            <span className="arrow">↑</span>
-          </button>
-          <button
-            onClick={() => onMove(index, 'down')}
-            className="order-button"
-            disabled={index === section.length - 1}
-            title="Przesuń sekcję w dół"
-          >
-            <span className="arrow">↓</span>
-          </button>
-        </div>
+        {!section.isFixed && (
+          <div className="section-controls">
+            <button
+              onClick={() => onMove(index, 'up')}
+              className="order-button"
+              disabled={index === 0}
+              title="Przesuń sekcję w górę"
+            >
+              <span className="arrow">↑</span>
+            </button>
+            <button
+              onClick={() => onMove(index, 'down')}
+              className="order-button"
+              disabled={index === totalSections - 1}
+              title="Przesuń sekcję w dół"
+            >
+              <span className="arrow">↓</span>
+            </button>
+          </div>
+        )}
       </div>
       {renderSectionContent()}
     </div>

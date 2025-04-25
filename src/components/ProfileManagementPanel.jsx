@@ -8,7 +8,6 @@ import {
   traitsAtom,
   educationAtom,
   experienceAtom,
-  customCategoriesAtom,
   selectedColorAtom,
   profileImageAtom,
   leftSectionsOrderAtom,
@@ -85,7 +84,6 @@ const ProfileManagementPanel = () => {
   const [traits, setTraits] = useAtom(traitsAtom);
   const [education, setEducation] = useAtom(educationAtom);
   const [experience, setExperience] = useAtom(experienceAtom);
-  const [customCategories, setCustomCategories] = useAtom(customCategoriesAtom);
   const [selectedColor] = useAtom(selectedColorAtom);
   const [profileImage] = useAtom(profileImageAtom);
   const [leftSections] = useAtom(leftSectionsOrderAtom);
@@ -158,17 +156,13 @@ const ProfileManagementPanel = () => {
       education,
       experience,
       skills,
-      customCategories,
       leftSections,
       rightSections
     });
 
     const options = {
       margin: 0,
-      filename: `${personalInfo.firstName}_${personalInfo.lastName}_cv.pdf`.replace(
-        /\s+/g,
-        '_'
-      ),
+      filename: `${personalInfo.fullName}_cv.pdf`.replace(/\s+/g, '_'),
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
     };
@@ -178,12 +172,11 @@ const ProfileManagementPanel = () => {
 
   const populateTestData = () => {
     setPersonalInfo({
-      firstName: 'Jan',
-      lastName: 'Kowalski',
-      address: 'Warszawa, ul. Przykładowa 123',
+      fullName: 'Jan Kowalski',
+      addressLine1: 'ul. Przykładowa 123/45',
+      addressLine2: '00-001 Warszawa',
       birthDate: '1990-01-01',
       phoneNumber: '+48 123 456 789',
-      email: 'jan.kowalski@example.com',
     });
     setSkills(['JavaScript', 'React', 'Node.js']);
     setInterests(['Programowanie', 'Muzyka', 'Sport']);
@@ -193,9 +186,6 @@ const ProfileManagementPanel = () => {
     ]);
     setExperience([
       { company: 'Firma X', position: 'Programista', period: '2020-2023' },
-    ]);
-    setCustomCategories([
-      { name: 'Projekty', items: ['Projekt A', 'Projekt B'] },
     ]);
   };
 

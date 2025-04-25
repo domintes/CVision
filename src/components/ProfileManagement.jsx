@@ -7,7 +7,6 @@ import {
   traitsAtom,
   educationAtom,
   experienceAtom,
-  customCategoriesAtom,
   selectedColorAtom,
   profileImageAtom,
   leftSectionsOrderAtom,
@@ -58,7 +57,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
   const [traits, setTraits] = useAtom(traitsAtom);
   const [education, setEducation] = useAtom(educationAtom);
   const [experience, setExperience] = useAtom(experienceAtom);
-  const [customCategories, setCustomCategories] = useAtom(customCategoriesAtom);
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
   const [profileImage, setProfileImage] = useAtom(profileImageAtom);
   const [leftSections, setLeftSections] = useAtom(leftSectionsOrderAtom);
@@ -105,7 +103,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
       traits,
       education,
       experience,
-      customCategories,
       selectedColor,
       profileImage,
       leftSections,
@@ -146,7 +143,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         setTraits(data.traits || []);
         setEducation(data.education || []);
         setExperience(data.experience || []);
-        setCustomCategories(data.customCategories || []);
         setSelectedColor(data.selectedColor || '#001f3f');
         setProfileImage(data.profileImage || null);
         setLeftSections(data.leftSections || leftSections);
@@ -222,7 +218,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         setTraits(data.traits || []);
         setEducation(data.education || []);
         setExperience(data.experience || []);
-        setCustomCategories(data.customCategories || []);
         setSelectedColor(data.selectedColor || '#001f3f');
         setProfileImage(data.profileImage || null);
         setLeftSections(data.leftSections || leftSections);
@@ -303,7 +298,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
               traits,
               education,
               experience,
-              customCategories,
               selectedColor,
               profileImage,
               leftSections,

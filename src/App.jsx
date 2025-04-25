@@ -64,11 +64,15 @@ const App = () => {
     <div className="cv-builder bg-gray-800 text-white p-6">
       <h1 className="app-header text-2xl mb-4">CVision</h1>
       <ProfileManagementPanel />
-      <ProfileImage />
-
       <div className="sections-container">
         <div className="left-sections">
           <h2 className="section-header">Lewa sekcja</h2>
+          <div className="section profileImage-section" draggable="false">
+            <div className="section-header"><h2>Zdjęcie</h2></div>
+            <div className="section-content profileImage-section">
+              <ProfileImage />
+            </div>
+          </div>
           {leftSections.map((section, index) => (
             <CVisionSection
               key={section.id}
@@ -79,6 +83,7 @@ const App = () => {
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index, 'left')}
               onMove={(index, direction) => moveSection(index, direction, 'left')}
+              totalSections={leftSections.length}
             />
           ))}
         </div>

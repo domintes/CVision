@@ -6,17 +6,8 @@ export const sectionConfig = {
     section: 'left',
     inputs: [
       {
-        name: 'firstName',
-        placeholderText: 'Imię',
-        type: 'text',
-        validation: {
-          isRequired: true,
-          minLength: 2
-        }
-      },
-      {
-        name: 'lastName',
-        placeholderText: 'Nazwisko',
+        name: 'fullName',
+        placeholderText: 'Imię i Nazwisko',
         type: 'text',
         validation: {
           isRequired: true,
@@ -40,20 +31,19 @@ export const sectionConfig = {
         }
       },
       {
-        name: 'email',
-        placeholderText: 'Adres e-mail',
-        type: 'email',
+        name: 'addressLine1',
+        placeholderText: 'Ulica, nr. mieszkania / nr. domu',
+        type: 'text',
         validation: {
           isRequired: true
         }
       },
       {
-        name: 'address',
-        placeholderText: 'Adres (np. Ulica 7D/2, Miasto, Kod pocztowy)',
-        type: 'textarea',
+        name: 'addressLine2',
+        placeholderText: 'Kod pocztowy, nazwa miejscowości',
+        type: 'text',
         validation: {
-          isRequired: true,
-          minLength: 10
+          isRequired: true
         }
       }
     ]
@@ -165,12 +155,5 @@ export const sectionConfig = {
       }
     ],
     isArray: true
-  },
-  custom: {
-    id: 'custom',
-    title: 'Kategorie niestandardowe',
-    defaultOrder: 3,
-    section: 'right',
-    isCustom: true
   }
 };
