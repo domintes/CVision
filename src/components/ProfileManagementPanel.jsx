@@ -91,6 +91,7 @@ const ProfileManagementPanel = () => {
   const [errors, setErrors] = useAtom(errorsAtom);
   const [touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
   const [showProfileList, setShowProfileList] = useState(false);
+  const [showSavePanel, setShowSavePanel] = useState(false);
   const [savedProfiles, setSavedProfiles] = useState([]);
 
   // Load saved profiles on mount
@@ -191,11 +192,13 @@ const ProfileManagementPanel = () => {
 
   return (
     <>
-      <div className="button-group">
-        <button onClick={exportToPDF} className="export-button">
-          Wyeksportuj jako PDF
+      <div className="sticky-navbar">
+        <button onClick={() => setShowSavePanel(!showSavePanel)} className="button">
+          Zapisz profil
         </button>
-        
+        <button onClick={exportToPDF} className="create-cv-button">
+          Stwórz CV
+        </button>
         <button onClick={() => setShowProfileList(!showProfileList)} className="button">
           Wczytaj profil
         </button>
@@ -204,6 +207,8 @@ const ProfileManagementPanel = () => {
       <ProfileManagement 
         showProfileList={showProfileList}
         setShowProfileList={setShowProfileList}
+        showSavePanel={showSavePanel}
+        setShowSavePanel={setShowSavePanel}
       />
     </>
   );

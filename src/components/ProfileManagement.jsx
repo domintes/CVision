@@ -50,7 +50,7 @@ const loadSavedProfiles = async () => {
   }
 };
 
-const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
+const ProfileManagement = ({ showProfileList, setShowProfileList, showSavePanel, setShowSavePanel }) => {
   const [personalInfo, setPersonalInfo] = useAtom(personalInfoAtom);
   const [skills, setSkills] = useAtom(skillsAtom);
   const [interests, setInterests] = useAtom(interestsAtom);
@@ -63,7 +63,6 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
   const [rightSections, setRightSections] = useAtom(rightSectionsOrderAtom);
 
   const [savedProfiles, setSavedProfiles] = useState([]);
-  const [showSavePanel, setShowSavePanel] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
   const [editingProfile, setEditingProfile] = useState(null);
   const [saveMode, setSaveMode] = useState('new'); // 'new' or 'replace'
@@ -233,36 +232,27 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
 
   return (
     <>
-      <div className="button-group">
-        <button onClick={() => setShowSavePanel(!showSavePanel)} className="button">
-          Zapisz profil
-        </button>
-        <button onClick={() => setShowProfileList(!showProfileList)} className="button">
-          Wczytaj profil
-        </button>
-        <button 
-          onClick={() => exportProfile({
-            personalInfo,
-            skills,
-            interests,
-            traits,
-            education,
-            experience,
-            selectedColor,
-            profileImage,
-            leftSections,
-            rightSections
-          })} 
-          className="button"
-        >
-          Eksportuj profil
-        </button>
-      </div>
-
       {showSavePanel && (
         <div className="profiles-list">
           <div className="load-profile-header-section">
             <h3>Zapisz profil</h3>
+            <button 
+              onClick={() => exportProfile({
+                personalInfo,
+                skills,
+                interests,
+                traits,
+                education,
+                experience,
+                selectedColor,
+                profileImage,
+                leftSections,
+                rightSections
+              })} 
+              className="export-profile-btn"
+            >
+              Eksportuj profil
+            </button>
             <button onClick={() => setShowSavePanel(false)} className="close-profile-panel-button">
               ✕
             </button>

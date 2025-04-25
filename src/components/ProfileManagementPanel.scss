@@ -2,14 +2,14 @@
 $primary-color: #007bff;
 $secondary-color: #0056b3;
 
-.button-group {
+.sticky-navbar {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
   position: sticky;
   top: 0;
-  background: rgba(20, 27, 33, 0.95);
+  background: rgb(19 28 47 / 95%);
   backdrop-filter: blur(10px);
   padding: 8px;
   z-index: 1000;
@@ -34,15 +34,14 @@ $secondary-color: #0056b3;
     &:hover {
       background: rgba(255, 255, 255, 0.2);
     }
-    
-    &.export-button {
-      background: $primary-color;
-      
+
+    &.create-cv-button {
+      font-weight: bold;
+      background-color: #3c2b59;
       &:hover {
-        background: $secondary-color;
+        background: #2f2246;
       }
     }
-
     &.import-button {
       background: rgba(255, 255, 255, 0.15);
       
@@ -208,6 +207,23 @@ $secondary-color: #0056b3;
     &:hover {
       color: rgb(202, 99, 99) !important;
       background-color: transparent;
+    }
+  }
+
+  .export-profile-btn,
+  .import-profile-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
     }
   }
 }
