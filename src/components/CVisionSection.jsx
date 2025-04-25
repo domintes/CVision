@@ -1,4 +1,19 @@
 import { useAtom } from 'jotai';
+import { 
+  FaUser, 
+  FaCalendar, 
+  FaPhone, 
+  FaMapMarker, 
+  FaBuilding, 
+  FaBriefcase, 
+  FaClock,
+  FaGraduationCap,
+  FaCity,
+  FaBook,
+  FaStar,
+  FaHeart,
+  FaCheckCircle
+} from 'react-icons/fa';
 import {
   personalInfoAtom,
   skillsAtom,
@@ -23,6 +38,34 @@ const validate = (value, validation) => {
   }
   
   return null;
+};
+
+const getInputIcon = (category, field) => {
+  const icons = {
+    personalInfo: {
+      fullName: <FaUser />,
+      birthDate: <FaCalendar />,
+      phoneNumber: <FaPhone />,
+      addressLine1: <FaMapMarker />,
+      addressLine2: <FaMapMarker />
+    },
+    education: {
+      school: <FaGraduationCap />,
+      city: <FaCity />,
+      period: <FaClock />,
+      field: <FaBook />
+    },
+    experience: {
+      company: <FaBuilding />,
+      position: <FaBriefcase />,
+      period: <FaClock />
+    },
+    skills: { default: <FaStar /> },
+    interests: { default: <FaHeart /> },
+    traits: { default: <FaCheckCircle /> }
+  };
+
+  return icons[category]?.[field] || icons[category]?.default || null;
 };
 
 const CVisionSection = ({
@@ -177,18 +220,20 @@ const CVisionSection = ({
     return config.inputs?.map((input, inputIndex) => {
       const fieldId = itemIndex !== null ? `${sectionId}-${itemIndex}-${input.name}` : `${sectionId}-${input.name}`;
       const error = touchedFields[fieldId] ? errors[fieldId] : null;
+      const icon = getInputIcon(sectionId, input.name);
 
       if (sectionId === 'personalInfo') {
         const InputComponent = input.type === 'textarea' ? 'textarea' : 'input';
         return (
           <div key={input.name} className="input-wrapper">
+            {icon && <span className="input-icon">{icon}</span>}
             <InputComponent
               type={input.type}
               placeholder={input.placeholderText}
               value={values[input.name] || ''}
               onChange={(e) => handleInputChange(e, input.name, null, sectionId)}
               onBlur={() => handleInputBlur(fieldId)}
-              className={`${input.type === 'textarea' ? 'textarea' : 'input'} ${error ? 'error' : ''}`}
+              className={`${input.type === 'textarea' ? 'textarea' : 'input'} ${error ? 'error' : ''} ${icon ? 'with-icon' : ''}`}
             />
             {error && <div className="error-bubble">{error}</div>}
           </div>
@@ -196,13 +241,14 @@ const CVisionSection = ({
       } else if (config.isArray && !input.isArray) {
         return (
           <div key={`${input.name}-${itemIndex}`} className="input-wrapper">
+            {icon && <span className="input-icon">{icon}</span>}
             <input
               type={input.type}
               placeholder={input.placeholderText}
               value={values[itemIndex]?.[input.name] || ''}
               onChange={(e) => handleInputChange(e, input.name, itemIndex, sectionId)}
               onBlur={() => handleInputBlur(fieldId)}
-              className={`input ${error ? 'error' : ''}`}
+              className={`input ${error ? 'error' : ''} ${icon ? 'with-icon' : ''}`}
             />
             {error && <div className="error-bubble">{error}</div>}
           </div>
@@ -212,13 +258,16 @@ const CVisionSection = ({
           <ul key={`${sectionId}-list-${inputIndex}`} className="input-list">
             {values.map((value, idx) => (
               <li key={`${sectionId}-${input.name}-${idx}`}>
-                <input
-                  type={input.type}
-                  placeholder={input.placeholderText}
-                  value={value || ''}
-                  onChange={(e) => handleInputChange(e, null, idx, sectionId)}
-                  className="input"
-                />
+                <div className="input-wrapper">
+                  {icon && <span className="input-icon">{icon}</span>}
+                  <input
+                    type={input.type}
+                    placeholder={input.placeholderText}
+                    value={value || ''}
+                    onChange={(e) => handleInputChange(e, null, idx, sectionId)}
+                    className={`input ${icon ? 'with-icon' : ''}`}
+                  />
+                </div>
               </li>
             ))}
           </ul>

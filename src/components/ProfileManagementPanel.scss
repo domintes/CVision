@@ -58,6 +58,13 @@ $secondary-color: #0056b3;
       }
     }
   }
+
+  .layout-toggle {
+    margin-left: auto; // This will push the button to the right
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 }
 
 .profiles-list {

@@ -1,14 +1,20 @@
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
 import './app.scss';
 import CVisionSection from './components/CVisionSection';
 import ProfileImage from './components/ProfileImage';
 import ColorPicker from './components/ColorPicker';
 import ProfileManagementPanel from './components/ProfileManagementPanel';
-import { leftSectionsOrderAtom, rightSectionsOrderAtom } from './store/atoms';
+import { leftSectionsOrderAtom, rightSectionsOrderAtom, isCompactLayoutAtom } from './store/atoms';
 
 const App = () => {
   const [leftSections, setLeftSections] = useAtom(leftSectionsOrderAtom);
   const [rightSections, setRightSections] = useAtom(rightSectionsOrderAtom);
+  const [isCompactLayout] = useAtom(isCompactLayoutAtom);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-compact-layout', isCompactLayout);
+  }, [isCompactLayout]);
 
   const handleDragStart = (e, index, section) => {
     e.dataTransfer.setData('text/plain', JSON.stringify({ index, section }));

@@ -34,5 +34,7 @@ export const rightSectionsOrderAtom = createEmptyAtom(
     .map(([_, config]) => config)
 );
 
+export const isCompactLayoutAtom = atom(true);
+
 export const errorsAtom = atom({});
 export const touchedFieldsAtom = atom({});

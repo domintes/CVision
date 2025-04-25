@@ -9,7 +9,7 @@ body {
 }
 
 .cv-builder {
-  max-width: 85vw;
+  max-width: var(--cv-max-width, 85vw);
   margin: 0 auto;
   padding: 20px;
   background-color: #141b21;
@@ -40,9 +40,11 @@ body {
 
   .sections-container {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: var(--grid-layout, 1fr 2fr);
     column-gap: 24px;
     padding: 0 24px;
+    transition: all 0.3s ease;
+    
     .left-sections, .right-sections {
       flex: 1;
       min-width: 0;
@@ -240,6 +242,20 @@ body {
   .input-wrapper {
     position: relative;
     margin-bottom: 1rem;
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      z-index: 1;
+    }
+
+    .input.with-icon,
+    .textarea.with-icon {
+      padding-left: 40px;
+    }
   }
 
   .error-bubble {
@@ -316,4 +332,26 @@ body {
 .color-picker-section {
   text-align: center;
   max-width: 40vw;
+}
+
+.button.layout-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .layout-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+}
+
+// Add layout classes
+:root {
+  --cv-max-width: 60vw;
+  --grid-layout: 1fr;
+  
+  &[data-compact-layout="false"] {
+    --cv-max-width: 85vw;
+    --grid-layout: 1fr 2fr;
+  }
 }

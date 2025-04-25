@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
+import { FaSave, FaFileExport, FaFolderOpen, FaColumns } from 'react-icons/fa';
 import html2pdf from 'html2pdf.js';
 import {
   personalInfoAtom,
@@ -13,7 +14,8 @@ import {
   leftSectionsOrderAtom,
   rightSectionsOrderAtom,
   errorsAtom,
-  touchedFieldsAtom
+  touchedFieldsAtom,
+  isCompactLayoutAtom
 } from '../store/atoms';
 import { sectionConfig } from '../data/sectionConfig';
 import CVTemplate from './CVTemplate';
@@ -90,6 +92,7 @@ const ProfileManagementPanel = () => {
   const [rightSections] = useAtom(rightSectionsOrderAtom);
   const [errors, setErrors] = useAtom(errorsAtom);
   const [touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
+  const [isCompactLayout, setIsCompactLayout] = useAtom(isCompactLayoutAtom);
   const [showProfileList, setShowProfileList] = useState(false);
   const [showSavePanel, setShowSavePanel] = useState(false);
   const [savedProfiles, setSavedProfiles] = useState([]);
@@ -194,13 +197,20 @@ const ProfileManagementPanel = () => {
     <>
       <div className="sticky-navbar">
         <button onClick={() => setShowSavePanel(!showSavePanel)} className="button">
-          Zapisz profil
+          <FaSave /> Zapisz profil
         </button>
         <button onClick={exportToPDF} className="create-cv-button">
-          Stwórz CV
+          <FaFileExport /> Stwórz CV
         </button>
         <button onClick={() => setShowProfileList(!showProfileList)} className="button">
-          Wczytaj profil
+          <FaFolderOpen /> Wczytaj profil
+        </button>
+        <button 
+          onClick={() => setIsCompactLayout(!isCompactLayout)} 
+          className="button layout-toggle"
+        >
+          <FaColumns />
+          Layout
         </button>
       </div>
 
