@@ -318,7 +318,7 @@ const ProfileManagement = ({ showProfileList, setShowProfileList, showSavePanel,
         </div>
       )}
 
-      {showProfileList && savedProfiles.length > 0 && (
+      {showProfileList && (
         <div className="profiles-list">
           <div className="load-profile-header-section">
             <h3>Wczytaj profil</h3>
@@ -330,23 +330,29 @@ const ProfileManagement = ({ showProfileList, setShowProfileList, showSavePanel,
             </button>
           </div>
           <div className="saved-profiles">
-            {savedProfiles.map(profile => (
-              <div key={profile.id} className="profile-item">
-                <div className="user-profile-name">{profile.name}</div>
-                <button 
-                  onClick={() => loadData(profile.id)} 
-                  className="load-profile"
-                >
-                  Wczytaj
-                </button>
-                <button 
-                  onClick={(e) => deleteProfile(profile.id, e)} 
-                  className="delete-profile"
-                >
-                  ✕
-                </button>
+            {savedProfiles.length > 0 ? (
+              savedProfiles.map(profile => (
+                <div key={profile.id} className="profile-item">
+                  <div className="user-profile-name">{profile.name}</div>
+                  <button 
+                    onClick={() => loadData(profile.id)} 
+                    className="load-profile"
+                  >
+                    Wczytaj
+                  </button>
+                  <button 
+                    onClick={(e) => deleteProfile(profile.id, e)} 
+                    className="delete-profile"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="no-profiles-message">
+                Nie zapisano żadnego profilu
               </div>
-            ))}
+            )}
           </div>
         </div>
       )}
