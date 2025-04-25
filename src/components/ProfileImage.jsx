@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai';
+import { FaTimes } from 'react-icons/fa';
 import { profileImageAtom } from '../store/atoms';
 
 const ProfileImage = () => {
@@ -19,11 +20,24 @@ const ProfileImage = () => {
     }
   };
 
+  const handleRemoveImage = () => {
+    setProfileImage(null);
+  };
+
   return (
     <div className="profile-image-section">
       <div className="profile-image-container">
         {profileImage ? (
-          <img src={profileImage} alt="Profile" className="profile-preview" />
+          <div className="image-wrapper">
+            <img src={profileImage} alt="Profile" className="profile-preview" />
+            <button 
+              onClick={handleRemoveImage}
+              className="remove-image-button"
+              title="Usuń zdjęcie"
+            >
+              <FaTimes />
+            </button>
+          </div>
         ) : (
           <div className="image-placeholder">
             <span>Kliknij aby dodać zdjęcie</span>
