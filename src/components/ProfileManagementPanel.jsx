@@ -196,13 +196,19 @@ const ProfileManagementPanel = () => {
   return (
     <>
       <div className="sticky-navbar">
-        <button onClick={() => setShowSavePanel(!showSavePanel)} className="button">
+        <button onClick={() => {
+          setShowSavePanel(!showSavePanel);
+          if (showProfileList) setShowProfileList(false);
+        }} className="button">
           <FaSave /> Zapisz profil
         </button>
         <button onClick={exportToPDF} className="create-cv-button">
           <FaFileExport /> Stwórz CV
         </button>
-        <button onClick={() => setShowProfileList(!showProfileList)} className="button">
+        <button onClick={() => {
+          setShowProfileList(!showProfileList);
+          if (showSavePanel) setShowSavePanel(false);
+        }} className="button">
           <FaFolderOpen /> Wczytaj profil
         </button>
         <button 
