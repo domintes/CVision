@@ -3,6 +3,7 @@ import {
   personalInfoAtom,
   skillsAtom,
   interestsAtom,
+  traitsAtom,
   educationAtom,
   experienceAtom,
   customCategoriesAtom,
@@ -28,6 +29,7 @@ const validate = (value, validation) => {
 const CVisionSection = ({ 
   section, 
   index, 
+  sectionType,
   onDragStart, 
   onDragOver, 
   onDrop, 
@@ -36,6 +38,7 @@ const CVisionSection = ({
   const [personalInfo, setPersonalInfo] = useAtom(personalInfoAtom);
   const [skills, setSkills] = useAtom(skillsAtom);
   const [interests, setInterests] = useAtom(interestsAtom);
+  const [traits, setTraits] = useAtom(traitsAtom);
   const [education, setEducation] = useAtom(educationAtom);
   const [experience, setExperience] = useAtom(experienceAtom);
   const [customCategories, setCustomCategories] = useAtom(customCategoriesAtom);
@@ -79,6 +82,13 @@ const CVisionSection = ({
         break;
       case 'interests':
         setInterests(prev => {
+          const updated = [...prev];
+          updated[index] = value;
+          return updated;
+        });
+        break;
+      case 'traits':
+        setTraits(prev => {
           const updated = [...prev];
           updated[index] = value;
           return updated;
@@ -149,6 +159,8 @@ const CVisionSection = ({
         return [skills, setSkills];
       case 'interests':
         return [interests, setInterests];
+      case 'traits':
+        return [traits, setTraits];
       case 'education':
         return [education, setEducation];
       case 'experience':

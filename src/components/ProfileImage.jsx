@@ -37,7 +37,7 @@ const ProfileImage = () => {
           id="profile-image-input"
         />
         <label htmlFor="profile-image-input" className="image-upload-label">
-          {profileImage ? 'Zmień zdjęcie' : 'Dodaj zdjęcie'}
+          {profileImage ? 'Zmień zdjęcie' : ''}
         </label>
       </div>
     </div>

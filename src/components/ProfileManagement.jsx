@@ -4,12 +4,14 @@ import {
   personalInfoAtom,
   skillsAtom,
   interestsAtom,
+  traitsAtom,
   educationAtom,
   experienceAtom,
   customCategoriesAtom,
   selectedColorAtom,
   profileImageAtom,
-  sectionsOrderAtom,
+  leftSectionsOrderAtom,
+  rightSectionsOrderAtom,
 } from '../store/atoms';
 import { sectionConfig } from '../data/sectionConfig';
 import showNotification from './Notification';
@@ -53,12 +55,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
   const [personalInfo, setPersonalInfo] = useAtom(personalInfoAtom);
   const [skills, setSkills] = useAtom(skillsAtom);
   const [interests, setInterests] = useAtom(interestsAtom);
+  const [traits, setTraits] = useAtom(traitsAtom);
   const [education, setEducation] = useAtom(educationAtom);
   const [experience, setExperience] = useAtom(experienceAtom);
   const [customCategories, setCustomCategories] = useAtom(customCategoriesAtom);
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
   const [profileImage, setProfileImage] = useAtom(profileImageAtom);
-  const [sections, setSections] = useAtom(sectionsOrderAtom);
+  const [leftSections, setLeftSections] = useAtom(leftSectionsOrderAtom);
+  const [rightSections, setRightSections] = useAtom(rightSectionsOrderAtom);
 
   const [savedProfiles, setSavedProfiles] = useState([]);
   const [showSaveInput, setShowSaveInput] = useState(false);
@@ -98,12 +102,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
       personalInfo,
       skills,
       interests,
+      traits,
       education,
       experience,
       customCategories,
       selectedColor,
       profileImage,
-      sections
+      leftSections,
+      rightSections
     };
 
     try {
@@ -137,12 +143,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         setPersonalInfo(data.personalInfo || {});
         setSkills(data.skills || []);
         setInterests(data.interests || []);
+        setTraits(data.traits || []);
         setEducation(data.education || []);
         setExperience(data.experience || []);
         setCustomCategories(data.customCategories || []);
         setSelectedColor(data.selectedColor || '#001f3f');
         setProfileImage(data.profileImage || null);
-        setSections(data.sections || []);
+        setLeftSections(data.leftSections || leftSections);
+        setRightSections(data.rightSections || rightSections);
         
         showNotification('Profil został wczytany');
         setShowProfileList(false);
@@ -211,12 +219,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
         setPersonalInfo(data.personalInfo || {});
         setSkills(data.skills || []);
         setInterests(data.interests || []);
+        setTraits(data.traits || []);
         setEducation(data.education || []);
         setExperience(data.experience || []);
         setCustomCategories(data.customCategories || []);
         setSelectedColor(data.selectedColor || '#001f3f');
         setProfileImage(data.profileImage || null);
-        setSections(data.sections || []);
+        setLeftSections(data.leftSections || leftSections);
+        setRightSections(data.rightSections || rightSections);
         
         showNotification('Profil został wczytany z pliku');
         setShowProfileList(false);
@@ -290,12 +300,14 @@ const ProfileManagement = ({ showProfileList, setShowProfileList }) => {
               personalInfo,
               skills,
               interests,
+              traits,
               education,
               experience,
               customCategories,
               selectedColor,
               profileImage,
-              sections
+              leftSections,
+              rightSections
             })} 
             className="button"
           >

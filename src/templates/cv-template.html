@@ -51,18 +51,47 @@
         left: 120px;
         width: 100%;
       }
+      .left-section-small-header {
+        background: rgba(255, 255, 255, 0.07);
+        padding: 4px 0;
+        margin: 10px 0 4px 0;
+        font-size: 14px;
+      }
+      .left-section-normal-header {
+        margin: 15px 0 5px 0;
+        font-size: 16px;
+      }
+      .personal-info-value {
+        margin: 0 0 10px 0;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="left-section">
-        <img src="{{profileImage}}" style="width: 180px; height: 220px; object-fit: cover; margin-bottom: 20px;">
         <h2>{{firstName}} {{lastName}}</h2>
-        <p>{{address}}</p>
+        <img src="{{profileImage}}" style="width: 180px; height: 220px; object-fit: cover; margin-bottom: 20px;">
+        <h3 class="left-section-normal-header">Dane osobowe</h3>
+        <h4 class="left-section-small-header">Data urodzenia</h4>
+        <p class="personal-info-value">{{birthDate}}</p>
+        <h4 class="left-section-small-header">Numer telefonu</h4>
+        <p class="personal-info-value">{{phoneNumber}}</p>
+        <h4 class="left-section-small-header">Adres E-mail</h4>
+        <p class="personal-info-value">{{email}}</p>
+        <h4 class="left-section-small-header">Adres</h4>
+        <p class="personal-info-value">{{address}}</p>
         {{#if interests}}
-        <h3>Zainteresowania:</h3>
+        <h3 class="left-section-normal-header">Zainteresowania</h3>
         <ul>
           {{#each interests}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+        {{/if}}
+        {{#if traits}}
+        <h3 class="left-section-normal-header">Cechy</h3>
+        <ul>
+          {{#each traits}}
           <li>{{this}}</li>
           {{/each}}
         </ul>
