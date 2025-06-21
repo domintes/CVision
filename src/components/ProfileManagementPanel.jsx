@@ -90,12 +90,12 @@ const ProfileManagementPanel = () => {
   const [profileImage] = useAtom(profileImageAtom);
   const [leftSections] = useAtom(leftSectionsOrderAtom);
   const [rightSections] = useAtom(rightSectionsOrderAtom);
-  const [errors, setErrors] = useAtom(errorsAtom);
-  const [touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
+  const [_errors, setErrors] = useAtom(errorsAtom);
+  const [_touchedFields, setTouchedFields] = useAtom(touchedFieldsAtom);
   const [isCompactLayout, setIsCompactLayout] = useAtom(isCompactLayoutAtom);
   const [showProfileList, setShowProfileList] = useState(false);
   const [showSavePanel, setShowSavePanel] = useState(false);
-  const [savedProfiles, setSavedProfiles] = useState([]);
+  const [_savedProfiles, setSavedProfiles] = useState([]);
 
   // Load saved profiles on mount
   useEffect(() => {
@@ -174,6 +174,44 @@ const ProfileManagementPanel = () => {
     html2pdf().from(content).set(options).save();
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const handleExport = async () => {
+    const allData = {
+      selectedColor,
+      profileImage,
+      personalInfo,
+      interests,
+      traits,
+      education,
+      experience,
+      skills,
+      leftSections,
+      rightSections
+    };
+
+    const cvHTML = CVTemplate(allData);
+    const today = new Date();
+    const date = `${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getFullYear()}`;
+    const fileName = `${personalInfo.fullName || 'CV'} ${date}.pdf`;
+
+    try {
+      const { success, error } = await window.electron.exportProfile({ 
+        data: cvHTML, 
+        fileName: fileName
+      });
+
+      if (success) {
+        showNotification('CV zostało pomyślnie zapisane', false);
+      } else {
+        showNotification(`Błąd podczas zapisywania CV: ${error}`, true);
+      }
+    } catch (e) {
+      console.error('Export error:', e);
+      showNotification('Wystąpił błąd podczas eksportu CV', true);
+    }
+  };
+
+  // eslint-disable-next-line no-unused-vars
   const populateTestData = () => {
     setPersonalInfo({
       fullName: 'Jan Kowalski',

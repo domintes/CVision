@@ -1,10 +1,9 @@
+/* eslint-env node */
 const { app, BrowserWindow, ipcMain, dialog, session } = require('electron')
 const path = require('path')
-const { createReadStream, writeFileSync, readFileSync, existsSync, readdirSync } = require('fs')
-const { createInterface } = require('readline')
-const glob = require('glob')
-const { dirname } = require('path')
-const { rename, mkdir } = require('fs/promises')
+const fs = require('fs')
+const { writeFileSync, readFileSync, existsSync, readdirSync } = fs
+const { mkdir } = require('fs/promises')
 const process = require('node:process')
 
 let mainWindow
@@ -15,7 +14,7 @@ function createWindow() {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws:;"
+          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws://localhost:3001"
         ]
       }
     })
@@ -39,14 +38,15 @@ function createWindow() {
     console.log('Loading production file from:', indexPath)
     mainWindow.loadFile(indexPath)
     // Open DevTools in production temporarily to debug
-    mainWindow.webContents.openDevTools()
-  } else {
-    const port = process.env.VITE_DEV_SERVER_PORT || 3001
-    mainWindow.loadURL(`http://localhost:${port}`)
+    mainWindow.webContents.openDevTools()  } else {
+    const port = process.env.VITE_DEV_SERVER_PORT || 3001;
+    const devUrl = `http://localhost:${port}`;
+    mainWindow.loadURL(devUrl)
     
     mainWindow.webContents.on('did-fail-load', () => {
-      console.log(`Nie udało się załadować http://localhost:${port}, próbuję port 3000...`)
-      mainWindow.loadURL('http://localhost:3000')
+      console.error(`Nie udało się załadować ${devUrl}. Upewnij się, że serwer deweloperski jest uruchomiony.`);
+      dialog.showErrorBox('Błąd serwera deweloperskiego', `Nie można załadować ${devUrl}. Upewnij się, że serwer deweloperski jest uruchomiony, wykonując 'npm run dev'.`);
+      app.quit();
     })
   }
 
@@ -82,11 +82,10 @@ function setupIpcHandlers() {
       return { success: false, error: error.message };
     }
   });
-
   ipcMain.handle('delete-profile', async (event, profileName) => {
     try {
       const filePath = path.join(profilesDir, `${profileName}.json`);
-      require('fs').unlinkSync(filePath);
+      fs.unlinkSync(filePath);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
@@ -139,6 +138,8 @@ function setupIpcHandlers() {
     }
   });
 }
+
+app.disableHardwareAcceleration();
 
 app.whenReady().then(() => {
   createWindow()

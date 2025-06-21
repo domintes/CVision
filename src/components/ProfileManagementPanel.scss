@@ -281,3 +281,25 @@ $secondary-color: #0056b3;
     }
   }
 }
+
+.export-button-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.export-button {
+  background-color: #FFD700; /* Złoty kolor */
+  color: #000;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #FFC700; /* Jaśniejszy złoty po najechaniu */
+  }
+}
