@@ -7,8 +7,7 @@ const CVTemplate = ({
   education,
   experience,
   skills,
-  leftSections,
-  rightSections
+  imageScale
 }) => {
   return `
     <html>
@@ -81,7 +80,7 @@ const CVTemplate = ({
           .profile-image {
             width: 180px;
             height: 220px;
-            object-fit: cover;
+            object-fit: ${imageScale}; /* dynamiczne skalowanie */
             margin-bottom: 20px;
             display: ${profileImage ? 'block' : 'none'};
           }
