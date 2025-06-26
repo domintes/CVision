@@ -28,7 +28,8 @@ const CVTemplate = ({
           .left-section {
             background-color: ${selectedColor};
             color: white;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
             width: 30%;
             box-sizing: border-box;
             height: 1056px;
@@ -38,6 +39,8 @@ const CVTemplate = ({
             width: 70%;
             box-sizing: border-box;
             color: black;
+            font-size: 17px !important;
+            line-height: 1.7em;
           }
           .header {
             color: ${selectedColor};
@@ -84,6 +87,20 @@ const CVTemplate = ({
             margin-bottom: 20px;
             display: ${profileImage ? 'block' : 'none'};
           }
+          .left-section h3 {
+            background: #00000027;
+            padding: 4px 12px;
+            font-size: 17px !important;
+          }
+          .left-section h2 {
+            padding: 18px 12px 0;
+          }
+          .left-section p {
+            padding-left: 12px;
+          }
+          .left-section ul {
+            padding-left: 12px;
+          }
         </style>
       </head>
       <body>
@@ -102,7 +119,7 @@ const CVTemplate = ({
             <h3>Data urodzenia</h3>
             <p>${personalInfo.birthDate || ''}</p>
             
-            ${interests?.length ? `
+            ${interests?.length > 1 ? `
               <h3>Zainteresowania</h3>
               <ul>
                 ${interests.map(interest => `<li>${interest}</li>`).join('')}
@@ -122,7 +139,7 @@ const CVTemplate = ({
               <div class="content">
                 <div class="header">Wykształcenie</div>
                 ${education.map(edu => 
-                  `<p><strong>${edu.school || ''}</strong>, ${edu.city || ''}<br>${edu.period || ''}<br>${edu.field || ''}</p>`
+                  `<p><strong>${edu.period || ''} ${' '} ${edu.school || ''}</strong>, ${edu.city || ''}<br>${edu.field || ''}</p>`
                 ).join('')}
               </div>
             ` : ''}
@@ -131,7 +148,7 @@ const CVTemplate = ({
               <div class="content">
                 <div class="header">Doświadczenie</div>
                 ${experience.map(exp => 
-                  `<p><strong>${exp.company || ''}</strong><br>${exp.position || ''}<br>${exp.period || ''}</p>`
+                  `<p><strong>${exp.period || ''} ${' '} ${exp.company || ''}</strong><br>${exp.position || ''}</p>`
                 ).join('')}
               </div>
             ` : ''}
